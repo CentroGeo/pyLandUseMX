@@ -5,4 +5,6 @@ d = { 'settings': { 'branch': 'master',
                 'doc_host': 'https://CentroGeo.github.io',
                 'git_url': 'https://github.com/CentroGeo/pyLandUseMX',
                 'lib_path': 'pyLandUseMX'},
-  'syms': {'pyLandUseMX.core': {'pyLandUseMX.core.foo': ('core.html#foo', 'pyLandUseMX/core.py')}}}
+  'syms': { 'pyLandUseMX.core': {'pyLandUseMX.core.foo': ('core.html#foo', 'pyLandUseMX/core.py')},
+            'pyLandUseMX.descargas': { 'pyLandUseMX.descargas.descarga_denue_inegi': ( 'descargas.html#descarga_denue_inegi',
+                                                                                       'pyLandUseMX/descargas.py')}}}

@@ -150,3 +150,7 @@ checklink/cookies.txt
 .quarto
 
 /.quarto/
+
+# Ignora los archivos en descargas pero no el directorio
+datos/descargas/*
+!datos/descargas/.gitkeep
