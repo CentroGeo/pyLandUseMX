@@ -68,7 +68,10 @@ def descarga_denue_inegi():
 def descarga_redes():
     # 
     DOWNLOADS_PATH = "datos/descargas/"
-    url = 'https://www.dropbox.com/s/0fq8e8v2axyxxoc/red_zmvm.gpkg?dl=1'
-    fname = 'red_zmvm.gpkg'
-    r = requests.get(url, allow_redirects=True)
-    open(DOWNLOADS_PATH + fname, 'wb').write(r.content)
+    if os.path.exists(DOWNLOADS_PATH + fname):
+        print("El archivo ya está descargado")
+    else:
+        url = 'https://www.dropbox.com/s/0fq8e8v2axyxxoc/red_zmvm.gpkg?dl=1'
+        fname = 'red_zmvm.gpkg'
+        r = requests.get(url, allow_redirects=True)
+        open(DOWNLOADS_PATH + fname, 'wb').write(r.content)
