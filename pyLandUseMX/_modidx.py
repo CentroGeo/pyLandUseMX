@@ -8,5 +8,8 @@ d = { 'settings': { 'branch': 'master',
   'syms': { 'pyLandUseMX.core': {'pyLandUseMX.core.foo': ('core.html#foo', 'pyLandUseMX/core.py')},
             'pyLandUseMX.descargas': { 'pyLandUseMX.descargas.descarga_denue_inegi': ( 'descargas.html#descarga_denue_inegi',
                                                                                        'pyLandUseMX/descargas.py'),
+                                       'pyLandUseMX.descargas.descarga_poligonos_ciudades': ( 'descargas.html#descarga_poligonos_ciudades',
+                                                                                              'pyLandUseMX/descargas.py'),
                                        'pyLandUseMX.descargas.descarga_redes': ( 'descargas.html#descarga_redes',
-                                                                                 'pyLandUseMX/descargas.py')}}}
+                                                                                 'pyLandUseMX/descargas.py')},
+            'pyLandUseMX.mallas': {'pyLandUseMX.mallas.grid_from_layer': ('mallas.html#grid_from_layer', 'pyLandUseMX/mallas.py')}}}
