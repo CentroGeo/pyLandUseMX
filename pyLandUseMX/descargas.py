@@ -67,6 +67,7 @@ def descarga_denue_inegi():
 # %% ../00_descargas.ipynb 8
 def descarga_redes():
     DOWNLOADS_PATH = "datos/descargas/"
+    Path(DOWNLOADS_PATH).mkdir(parents=True, exist_ok=True)
     fname = 'red_zmvm.gpkg'
     if os.path.exists(DOWNLOADS_PATH + fname):
         print("El archivo ya está descargado")
