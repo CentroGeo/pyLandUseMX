@@ -36,8 +36,8 @@ def grid_from_layer(layer: gpd.GeoDataFrame, # Capa que define la extensión esp
     return grid
 
 # %% ../01_mallas.ipynb 13
-def puntos_a_malla(grid:gpd.GeoDataFrame, # La malla en la que se va a agregar
-                   puntos:gpd.GeoDataFrame # La capa de puntos a agregar
+def puntos_a_malla(puntos:gpd.GeoDataFrame, # La malla en la que se va a agregar
+                   grid:gpd.GeoDataFrame # La capa de puntos a agregar
                    )-> gpd.GeoDataFrame:
     if grid.crs != puntos.crs:
         puntos = puntos.to_crs(grid.crs)
