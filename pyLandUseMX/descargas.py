@@ -79,6 +79,7 @@ def descarga_redes():
 # %% ../00_descargas.ipynb 11
 def descarga_poligonos_ciudades():
     DOWNLOADS_PATH = "datos/descargas/"
+    Path(DOWNLOADS_PATH).mkdir(parents=True, exist_ok=True)
     fname = 'silhuetas.shp.zip'
     if os.path.exists(DOWNLOADS_PATH + fname):
         print("El archivo ya está descargado")
