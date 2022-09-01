@@ -15,4 +15,5 @@ d = { 'settings': { 'branch': 'master',
                                        'pyLandUseMX.descargas.descarga_redes': ( 'descargas.html#descarga_redes',
                                                                                  'pyLandUseMX/descargas.py')},
             'pyLandUseMX.mallas': { 'pyLandUseMX.mallas.grid_from_layer': ('mallas.html#grid_from_layer', 'pyLandUseMX/mallas.py'),
+                                    'pyLandUseMX.mallas.lineas_a_malla': ('mallas.html#lineas_a_malla', 'pyLandUseMX/mallas.py'),
                                     'pyLandUseMX.mallas.puntos_a_malla': ('mallas.html#puntos_a_malla', 'pyLandUseMX/mallas.py')}}}
