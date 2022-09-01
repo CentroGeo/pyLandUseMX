@@ -37,7 +37,8 @@ def grid_from_layer(layer: gpd.GeoDataFrame, # Capa que define la extensión esp
 
 # %% ../01_mallas.ipynb 13
 def puntos_a_malla(puntos:gpd.GeoDataFrame, # La malla en la que se va a agregar
-                   grid:gpd.GeoDataFrame # La capa de puntos a agregar
+                   grid:gpd.GeoDataFrame, # La capa de puntos a agregar
+                   campo: str='cuenta', # Nombre del campo en el que se guarda el resultado
                    )-> gpd.GeoDataFrame:
     if grid.crs != puntos.crs:
         puntos = puntos.to_crs(grid.crs)
@@ -47,7 +48,7 @@ def puntos_a_malla(puntos:gpd.GeoDataFrame, # La malla en la que se va a agregar
                 .groupby('grid_id')
                 .size()
                 .reset_index()
-                .rename({0:'cuenta'}, axis=1)
+                .rename({0:campo}, axis=1)
                 .merge(malla, on='grid_id', how='right').fillna(0))
     agregado = (gpd.GeoDataFrame(agregado)
                .set_crs(malla.crs))
@@ -55,7 +56,8 @@ def puntos_a_malla(puntos:gpd.GeoDataFrame, # La malla en la que se va a agregar
 
 # %% ../01_mallas.ipynb 19
 def lineas_a_malla(lineas:gpd.GeoDataFrame, # La capa de líneas a agregar
-                   malla: gpd.GeoDataFrame # La malla para la agregación
+                   malla: gpd.GeoDataFrame, # La malla para la agregación
+                   campo: str='longitud', # Nombre del campo en el que se guarda el resultado
                    ):
     """ Regresa la malla con la longitud de las lineas agregadas en cada elemento. """ 
     with warnings.catch_warnings():
@@ -65,7 +67,7 @@ def lineas_a_malla(lineas:gpd.GeoDataFrame, # La capa de líneas a agregar
                 .overlay(malla, how='union')
                 .dissolve(by='grid_id')
                 .length.reset_index()
-                .rename({0:'longitud'}, axis=1)   
+                .rename({0:campo}, axis=1)   
             )
     union = (malla
             .merge(union, on='grid_id', how='left')
