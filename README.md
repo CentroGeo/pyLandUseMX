@@ -56,10 +56,143 @@ descarga_redes()
 descarga_poligonos_ciudades()
 ```
 
-    2
-
 También podemos descargar todos los datos:
 
+### Mallas
+
+El módulo mallas permite agregar diferentes cpas en mallas regulares.
+Supongamos que tenemos una capa de puntos que representa la ocurrencia
+de algún uso de suelo y las vialidades primarias. Podemos fácilmente
+agregar las dos capas en una malla regular, obtener rasters y
+visualizarlos
+
 ``` python
-## TODO
+puntos = gpd.read_file("datos/points_sample.zip") # Leemos los puntos
+puntos = puntos.to_crs(32614)
+red = gpd.read_file("datos/descargas/red_zmvm.gpkg") # Leemos las líneas
+red = red.loc[red.tag_id.isin([104,108,106,101])] # Filtramos las vialidades primarias
+malla = Malla.desde_capa(puntos, 1000) # Creamos una malla del tamaño de los puntos
+malla = (malla
+             .agrega_puntos(puntos, campo="puntos")
+             .agrega_lineas(red, campo='metros_vialidad')
+             )
+malla.malla
 ```
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>grid_id</th>
+      <th>puntos</th>
+      <th>geometry</th>
+      <th>metros_vialidad</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>0.0</td>
+      <td>POLYGON ((404331.782 2029252.065, 405331.782 2...</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>0.0</td>
+      <td>POLYGON ((404331.782 2030252.065, 405331.782 2...</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>0.0</td>
+      <td>POLYGON ((404331.782 2031252.065, 405331.782 2...</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3</td>
+      <td>0.0</td>
+      <td>POLYGON ((404331.782 2032252.065, 405331.782 2...</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4</td>
+      <td>0.0</td>
+      <td>POLYGON ((404331.782 2033252.065, 405331.782 2...</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>50499</th>
+      <td>50499</td>
+      <td>0.0</td>
+      <td>POLYGON ((639331.782 2238252.065, 640331.782 2...</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>50500</th>
+      <td>50500</td>
+      <td>1.0</td>
+      <td>POLYGON ((639331.782 2239252.065, 640331.782 2...</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>50501</th>
+      <td>50501</td>
+      <td>0.0</td>
+      <td>POLYGON ((639331.782 2240252.065, 640331.782 2...</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>50502</th>
+      <td>50502</td>
+      <td>0.0</td>
+      <td>POLYGON ((639331.782 2241252.065, 640331.782 2...</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>50503</th>
+      <td>50503</td>
+      <td>0.0</td>
+      <td>POLYGON ((639331.782 2242252.065, 640331.782 2...</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>50504 rows × 4 columns</p>
+</div>
+
+Podemos ver los rasters
+
+``` python
+cube = malla.to_xarray()
+cube.metros_vialidad.plot()
+```
+
+    <matplotlib.collections.QuadMesh>
+
+![](index_files/figure-gfm/cell-4-output-2.png)
