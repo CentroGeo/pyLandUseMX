@@ -14,7 +14,9 @@ d = { 'settings': { 'branch': 'master',
                                                                                               'pyLandUseMX/descargas.py'),
                                        'pyLandUseMX.descargas.descarga_redes': ( 'descargas.html#descarga_redes',
                                                                                  'pyLandUseMX/descargas.py')},
-            'pyLandUseMX.mallas': { 'pyLandUseMX.mallas.grid_from_layer': ('mallas.html#grid_from_layer', 'pyLandUseMX/mallas.py'),
-                                    'pyLandUseMX.mallas.lineas_a_malla': ('mallas.html#lineas_a_malla', 'pyLandUseMX/mallas.py'),
-                                    'pyLandUseMX.mallas.malla_to_xarray': ('mallas.html#malla_to_xarray', 'pyLandUseMX/mallas.py'),
-                                    'pyLandUseMX.mallas.puntos_a_malla': ('mallas.html#puntos_a_malla', 'pyLandUseMX/mallas.py')}}}
+            'pyLandUseMX.mallas': { 'pyLandUseMX.mallas.Malla': ('mallas.html#malla', 'pyLandUseMX/mallas.py'),
+                                    'pyLandUseMX.mallas.Malla.__init__': ('mallas.html#__init__', 'pyLandUseMX/mallas.py'),
+                                    'pyLandUseMX.mallas.Malla.agrega_lineas': ('mallas.html#malla.agrega_lineas', 'pyLandUseMX/mallas.py'),
+                                    'pyLandUseMX.mallas.Malla.agrega_puntos': ('mallas.html#malla.agrega_puntos', 'pyLandUseMX/mallas.py'),
+                                    'pyLandUseMX.mallas.Malla.desde_capa': ('mallas.html#desde_capa', 'pyLandUseMX/mallas.py'),
+                                    'pyLandUseMX.mallas.Malla.to_xarray': ('mallas.html#malla.to_xarray', 'pyLandUseMX/mallas.py')}}}
