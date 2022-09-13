@@ -58,7 +58,7 @@ descarga_poligonos_ciudades()
 
 También podemos descargar todos los datos:
 
-### Mallas
+## Mallas
 
 El módulo mallas permite agregar diferentes cpas en mallas regulares.
 Supongamos que tenemos una capa de puntos que representa la ocurrencia
@@ -196,3 +196,12 @@ cube.metros_vialidad.plot()
     <matplotlib.collections.QuadMesh>
 
 ![](index_files/figure-gfm/cell-4-output-2.png)
+
+## DENUE
+
+Este módulo provee funcionalidades para trabajar con datos del
+Directorio Nacional de Unidades Económicas y obtener algunas variables
+de uso de suelo.
+
+Permite seleccionar actividades económicas por clave SCIAN o agregar
+estas actividades en categorías usando expresiones regulares.
