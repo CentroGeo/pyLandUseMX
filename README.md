@@ -23,10 +23,10 @@ Por lo pronto, la manera más fácil de instalar la librería es usando
 `pip` para instalar desde el repositorio. Antes es necesario asegurarse
 de que las dependencias del sistema están instaladas:
 
--   `gdal`
--   `rtree`
--   `libgeos`
--   `proj`
+- `gdal`
+- `rtree`
+- `libgeos`
+- `proj`
 
 En sistemas basados en `apt`:
 

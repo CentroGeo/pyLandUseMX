@@ -11,6 +11,7 @@ from shapely.geometry import Polygon
 from geocube.api.core import make_geocube
 import numpy as np
 from .descargas import *
+from .denue import *
 import warnings
 
 # %% ../01_mallas.ipynb 6
@@ -47,23 +48,38 @@ class Malla(object):
 def agrega_puntos(self:Malla,
                   puntos:gpd.GeoDataFrame, # La malla en la que se va a agregar
                   campo: str='cuenta', # Nombre del campo en el que se guarda el resultado
+                  clasificacion: str=None # Columna de `puntos` que clasifica a las observaciones. En este caso se agregan
+                                          # tantas columnas a la malla como valores distintos haya en la columna
+                                          # (en este caso se ignora `campo`)
                 ) -> Malla:
     """ Regresa una `Malla` con los conteos de puntos en cada elemento."""
     if self.malla.crs != puntos.crs:
         puntos = puntos.to_crs(self.malla.crs)
-    agregado = (puntos
-                .sjoin(self.malla)
-                .groupby('grid_id')
-                .size()
-                .reset_index()
-                .rename({0:campo}, axis=1)
-                .merge(self.malla, on='grid_id', how='right').fillna(0))
-    agregado = (gpd.GeoDataFrame(agregado)
-               .set_crs(self.malla.crs))
+    if 'index_right' in puntos.columns:
+        puntos = puntos.drop(columns='index_right')
+    if clasificacion is None:
+        agregado = (puntos
+                    .sjoin(self.malla)
+                    .groupby('grid_id')
+                    .size()
+                    .reset_index()
+                    .rename({0:campo}, axis=1)
+                    .merge(self.malla, on='grid_id', how='right').fillna(0))
+        agregado = (gpd.GeoDataFrame(agregado)
+                .set_crs(self.malla.crs))
+    else:
+        agregado = (puntos
+                    .sjoin(self.malla)
+                    .groupby([clasificacion, 'grid_id'])
+                    .size()
+                    .reset_index()
+                    .pivot(index='grid_id', columns=clasificacion, values=0)                    
+                    .merge(self.malla, on='grid_id', how='right')
+                    .fillna(0))
     m = Malla(self.size, agregado)
     return m
 
-# %% ../01_mallas.ipynb 19
+# %% ../01_mallas.ipynb 24
 @patch
 def agrega_lineas(self:Malla,
                   lineas:gpd.GeoDataFrame, # La capa de líneas a agregar
@@ -87,7 +103,7 @@ def agrega_lineas(self:Malla,
     m = Malla(self.size, union)
     return m
 
-# %% ../01_mallas.ipynb 29
+# %% ../01_mallas.ipynb 34
 @patch
 def to_xarray(self:Malla,
               campos: list=None # Lista de campos a convertir, se convierten en bandas del raster
