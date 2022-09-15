@@ -20,7 +20,6 @@ website:
   description: "Herramientas para construir y obtener variables de uso de suelo en México"
   twitter-card: true
   open-graph: true
-  reader-mode: true
   repo-branch: master
   repo-url: "https://github.com/CentroGeo/pyLandUseMX"
   repo-actions: [issue]

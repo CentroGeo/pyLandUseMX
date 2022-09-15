@@ -1,0 +1,8 @@
+website:
+  sidebar:
+    contents:
+      - index.ipynb
+      - 00_descargas.ipynb
+      - 01_mallas.ipynb
+      - 02_denue.ipynb
+      - 03_analisis.ipynb
