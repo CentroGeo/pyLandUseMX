@@ -67,9 +67,9 @@ agregar las dos capas en una malla regular, obtener rasters y
 visualizarlos
 
 ``` python
-puntos = gpd.read_file("datos/points_sample.zip") # Leemos los puntos
+puntos = gpd.read_file("../datos/points_sample.zip") # Leemos los puntos
 puntos = puntos.to_crs(32614)
-red = gpd.read_file("datos/descargas/red_zmvm.gpkg") # Leemos las líneas
+red = gpd.read_file("../datos/descargas/red_zmvm.gpkg") # Leemos las líneas
 red = red.loc[red.tag_id.isin([104,108,106,101])] # Filtramos las vialidades primarias
 malla = Malla.desde_capa(puntos, 1000) # Creamos una malla del tamaño de los puntos
 malla = (malla

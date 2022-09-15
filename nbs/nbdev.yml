@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "pyLandUseMX"
+  site-url: "https://CentroGeo.github.io/pyLandUseMX"
+  description: "Herramientas para construir y obtener variables de uso de suelo en México"
+  repo-branch: master
+  repo-url: "https://github.com/CentroGeo/pyLandUseMX"
