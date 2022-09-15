@@ -11,7 +11,7 @@ from .descargas import *
 
 # %% ../02_denue.ipynb 6
 class Denue(object):
-    """ Representa una malla para procesar variables de uso de suelo."""
+    """ Clase para guardar una capa del DENUE para procesarla."""
     def __init__(self,
                  datos:gpd.GeoDataFrame=None
                 ) -> None:

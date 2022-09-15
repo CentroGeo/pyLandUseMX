@@ -30,4 +30,3 @@ d = { 'settings': { 'branch': 'master',
                                     'pyLandUseMX.mallas.Malla.agrega_puntos': ('mallas.html#malla.agrega_puntos', 'pyLandUseMX/mallas.py'),
                                     'pyLandUseMX.mallas.Malla.desde_capa': ('mallas.html#desde_capa', 'pyLandUseMX/mallas.py'),
                                     'pyLandUseMX.mallas.Malla.to_xarray': ('mallas.html#malla.to_xarray', 'pyLandUseMX/mallas.py')}}}
-                                    
