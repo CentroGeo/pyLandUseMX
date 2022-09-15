@@ -17,6 +17,7 @@ from .coberturas import *
 
 # %% ../nbs/03_analisis.ipynb 6
 class Canasta (object):
+    """ Clase para guardar los elementos básicos del análisis de afinidad."""
     def __init__(self,
                  puntos:gpd.GeoDataFrame, # Los puntos que representan las actividades o items
                  cobertura: Cobertura, # Los polígonos en los que se agregan los items  

@@ -17,18 +17,14 @@ import warnings
 
 # %% ../nbs/01_coberturas.ipynb 6
 class Cobertura(ABC):
-
-    # @property
-    # @abstractmethod
-    # def datos(self):
-    #     pass
-
+    """Clase abstracta que define la interfaz para los diferentes tipos de cobertura."""
     @abstractmethod
     def agrega_puntos(self,
                       puntos:gpd.GeoDataFrame,
                       campo:str,
                       clasificacion:str
         ):
+        """ Debe proveer la funcionalidad para agregar puntos en los elementos de la cobertura."""
         pass
 
     @abstractmethod
@@ -36,6 +32,7 @@ class Cobertura(ABC):
                       lineas:gpd.GeoDataFrame,
                       campo:str
         ):
+        """ Debe proveer la funcionalidad para agregar líneas en los elementos de la cobertura."""
         pass
 
 # %% ../nbs/01_coberturas.ipynb 8
