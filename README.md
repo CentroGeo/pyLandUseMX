@@ -76,7 +76,7 @@ malla = (malla
              .agrega_puntos(puntos, campo="puntos")
              .agrega_lineas(red, campo='metros_vialidad')
              )
-malla.malla
+malla.datos
 ```
 
 <div>

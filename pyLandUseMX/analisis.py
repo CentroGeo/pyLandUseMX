@@ -12,17 +12,17 @@ from mlxtend.frequent_patterns import apriori
 from mlxtend.frequent_patterns import association_rules
 from .descargas import *
 from .denue import *
-from .mallas import *
+from .coberturas import *
 
 
 # %% ../nbs/03_analisis.ipynb 6
 class Canasta (object):
     def __init__(self,
                  puntos:gpd.GeoDataFrame, # Los puntos que representan las actividades o items
-                 malla: Malla, # Los polígonos en los que se agregan los items  
+                 cobertura: Cobertura, # Los polígonos en los que se agregan los items  
             ) -> None:
         self.puntos = puntos
-        self.malla = malla
+        self.malla = cobertura
 
 # %% ../nbs/03_analisis.ipynb 12
 @patch
@@ -35,7 +35,6 @@ def asocia(self:Canasta,
 # %% ../nbs/03_analisis.ipynb 16
 @patch
 def codifica_transaccion(self:Canasta) -> pd.DataFrame:
-    t = self.malla.malla.drop(columns='geometry').set_index('grid_id')
-    # lambda x: (False) ix x <= 0 else True
+    t = self.malla.datos.drop(columns='geometry').set_index('grid_id')
     t = t.applymap(lambda x: False if x <= 0 else True)
     return t
