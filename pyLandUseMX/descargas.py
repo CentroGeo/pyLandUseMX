@@ -62,6 +62,19 @@ def descarga_poligonos_ciudades():
         open(DOWNLOADS_PATH + fname, 'wb').write(r.content)
 
 # %% ../nbs/00_descargas.ipynb 14
+def descarga_poligonos_ciudades():
+    # https://www.dropbox.com/s/6dbyk1izvlub3xv/colonias_cdmx.zip?dl=0
+    DOWNLOADS_PATH = "../datos/descargas/"
+    Path(DOWNLOADS_PATH).mkdir(parents=True, exist_ok=True)
+    fname = 'colonias_cdmx.zip'
+    if os.path.exists(DOWNLOADS_PATH + fname):
+        print("El archivo ya está descargado")
+    else:
+        url = 'https://www.dropbox.com/s/6dbyk1izvlub3xv/colonias_cdmx.zip?dl=1'
+        r = requests.get(url, allow_redirects=True)
+        open(DOWNLOADS_PATH + fname, 'wb').write(r.content)
+
+# %% ../nbs/00_descargas.ipynb 17
 def descarga_datos_completos():
     descarga_poligonos_ciudades()
     descarga_redes()
