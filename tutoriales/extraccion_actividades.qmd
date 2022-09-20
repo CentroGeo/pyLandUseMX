@@ -1,0 +1,27 @@
+---
+title: "Extracción de actividades"
+format:
+  html:
+    code-fold: true
+#jupyter: /home/plablo/miniconda3/envs/landuse/bin/python
+---
+
+En este tutorial vamos a usar la librería para extraer algunas actividades específicas y agregarlas por colonias en la CDMX. Las actividades que vamos a extraer son:
+
+* Bancos
+* Tiendas de conveniencia
+* Restaurantes
+* Bares
+* Estaciones de metro
+* Estaciones de metrobús
+* Estaciones de policia
+
+Empezamos por importar todas las librerías que vamos a usar
+
+
+```{python}
+import geopandas as gpd
+from pyLandUseMX.descargas import *
+from pyLandUseMX.coberturas import *
+from pyLandUseMX.denue import *
+```
