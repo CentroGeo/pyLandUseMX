@@ -8,6 +8,7 @@ from fastcore.basics import *
 import matplotlib.pyplot as plt
 import geopandas as gpd
 from .descargas import *
+import warnings
 
 # %% ../nbs/02_denue.ipynb 6
 class Denue(object):
