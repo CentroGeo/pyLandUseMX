@@ -27,12 +27,18 @@ class Denue(object):
 @patch
 def filtra_scian(
         self:Denue,
-        filtro:list # Lista con las claves a filtrar
+        filtro:list, # Lista con las claves a filtrar
+        categoria:str=None # Si se especifica agregamos una columna Categoría 
+                           # y la populamos con el valor especificado
     )-> Denue:
-    d = self.datos.loc[self.datos.codigo_act.str.startswith(tuple(filtro), na=False)]
+    d = self.datos.loc[self.datos.codigo_act.str.startswith(tuple(filtro), na=False),:]
+    if categoria is not None:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            d.loc[:,'Categoria'] = categoria
     return Denue(d)
 
-# %% ../nbs/02_denue.ipynb 16
+# %% ../nbs/02_denue.ipynb 18
 @patch
 def agrega_en_usos(
         self: Denue,
