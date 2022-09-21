@@ -14,7 +14,19 @@ website:
   navbar:
     background: primary
     search: true
+    right:
+      - icon: github
+        href: "https://github.com/CentroGeo/pyLandUseMX"
+      - icon: twitter
+        href: https://twitter.com/plablo09
+        aria-label: plablo09 Twitter    
   sidebar:
     style: floating
+    # contents: 
+    #   - auto: "/*.ipynb"
+    #   - section: Tutoriales
+    #     contents: [tutoriales]
+    #   - section: API
+    #     contents: [api]
 
 metadata-files: [nbdev.yml, sidebar.yml]
