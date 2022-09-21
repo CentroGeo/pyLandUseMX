@@ -197,8 +197,7 @@ def agrega_puntos(self:Poligonos,
                     .reset_index()
                     .rename({0:campo}, axis=1)
                     .merge(self.datos, on=self.id_col, how='right').fillna(0))
-        agregado = (gpd.GeoDataFrame(agregado)
-                       .set_crs(self.datos.crs))
+
     else:
         agregado = (puntos
                     .sjoin(self.datos)
@@ -208,5 +207,7 @@ def agrega_puntos(self:Poligonos,
                     .pivot(index=self.id_col, columns=clasificacion, values=0)                    
                     .merge(self.datos, on=self.id_col, how='right')
                     .fillna(0))
+    agregado = (gpd.GeoDataFrame(agregado)
+                .set_crs(self.datos.crs))
     p = Poligonos(agregado, self.id_col)
     return p
