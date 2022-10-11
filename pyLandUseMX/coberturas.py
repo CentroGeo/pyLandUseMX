@@ -7,6 +7,7 @@ __all__ = ['Cobertura', 'Malla', 'Poligonos']
 from abc import ABC, abstractmethod
 from fastcore.basics import *
 import matplotlib.pyplot as plt
+import pandas as pd
 import geopandas as gpd
 from shapely.geometry import Polygon
 from geocube.api.core import make_geocube
@@ -142,7 +143,40 @@ def agrega_lineas(self:Malla,
     m = Malla(union, self.size)
     return m
 
-# %% ../nbs/api/01_coberturas.ipynb 41
+# %% ../nbs/api/01_coberturas.ipynb 42
+@patch
+def agrega_manzanas(self:Malla,
+                    poligonos:gpd.GeoDataFrame, # Las manzanas (`descarga_manzanas`).
+                    metodo: str # centro/area, método para resolver sobreposiciones
+    ) -> Malla:
+    pd.options.mode.chained_assignment = None
+    if poligonos.crs != self.crs:
+        poligonos = poligonos.to_crs(self.crs)
+    # Primero asignamos el id de la malla a todos los contenidos
+    poligonos = (poligonos
+                 .sjoin(self.datos, predicate='covered_by', how='left')
+                 .loc[:, ['grid_id', 'CVEGEO', 'geometry']])
+    # resolvemos los demás de acuerdo al método selecionado
+    if metodo == 'centro':
+        sin_asignar = poligonos.loc[poligonos['grid_id'].isna(),:]
+        sin_asignar['geometry'] = sin_asignar['geometry'].centroid
+        # sin_asignar.loc[:, 'geometry'] = sin_asignar['geometry'].centroid
+        sin_asignar = (sin_asignar
+                      .drop(columns='grid_id')
+                      .sjoin(self.datos)
+                      .drop(columns='index_right'))
+
+    # Completamos los grid_id en los poligonos    
+    poligonos = poligonos.merge(sin_asignar[['CVEGEO', 'grid_id']], on='CVEGEO', how='left')
+    poligonos['grid_id'] = (poligonos['grid_id_y']
+                            .fillna(poligonos['grid_id_x']))
+    poligonos = poligonos.drop(columns=['grid_id_x', 'grid_id_y'])
+    poligonos['grid_id'] = poligonos['grid_id'].astype(int)
+    # return poligonos
+    return poligonos
+
+
+# %% ../nbs/api/01_coberturas.ipynb 46
 @patch
 def to_xarray(self:Malla,
               campos: list=None # Lista de campos a convertir, se convierten en bandas del raster
@@ -156,7 +190,7 @@ def to_xarray(self:Malla,
                        )
     return cube
 
-# %% ../nbs/api/01_coberturas.ipynb 47
+# %% ../nbs/api/01_coberturas.ipynb 52
 class Poligonos(Cobertura):
     """ Representa una cobertura de polígonos de forma arbitraria 
         para procesar variables de uso de suelo."""
@@ -183,7 +217,7 @@ class Poligonos(Cobertura):
     def agrega_puntos(self, puntos: gpd.GeoDataFrame, campo: str=None, clasificacion: str=None):
         pass    
 
-# %% ../nbs/api/01_coberturas.ipynb 52
+# %% ../nbs/api/01_coberturas.ipynb 57
 @patch
 def agrega_puntos(self:Poligonos,
                   puntos:gpd.GeoDataFrame, # La malla en la que se va a agregar

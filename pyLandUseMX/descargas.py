@@ -2,7 +2,7 @@
 
 # %% auto 0
 __all__ = ['DOWNLOADS_PATH', 'descarga_denue', 'descarga_redes', 'descarga_poligonos_ciudades', 'descarga_colonias_cdmx',
-           'descarga_datos_completos']
+           'descarga_manzanas', 'descarga_datos_completos']
 
 # %% ../nbs/api/00_descargas.ipynb 3
 import pandas as pd
@@ -80,6 +80,19 @@ def descarga_colonias_cdmx():
     return absp
 
 # %% ../nbs/api/00_descargas.ipynb 17
+def descarga_manzanas():
+    Path(DOWNLOADS_PATH).mkdir(parents=True, exist_ok=True)
+    fname = 'manzanas.gpkg'
+    absp = os.path.abspath(os.path.join(DOWNLOADS_PATH, fname))
+    if os.path.exists(absp):
+        print("El archivo ya está descargado")
+    else:
+        url = 'https://www.dropbox.com/s/bzsj7wl4izzdbjh/manzanas_identificadores.gpkg?dl=1'
+        r = requests.get(url, allow_redirects=True)
+        open(absp, 'wb').write(r.content)
+    return absp
+
+# %% ../nbs/api/00_descargas.ipynb 20
 def descarga_datos_completos():
     descarga_poligonos_ciudades()
     descarga_redes()
