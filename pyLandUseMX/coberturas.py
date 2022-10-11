@@ -40,16 +40,17 @@ class Cobertura(ABC):
 class Malla(Cobertura):
     """ Representa una malla para procesar variables de uso de suelo."""
     def __init__ (self,
-                 datos:gpd.GeoDataFrame=None, # La malla vectorial
-                 size:float=1000, # Tamaño de los elementos de la malla (en las unidades de la proyección de `layer`)
+                  datos:gpd.GeoDataFrame=None, # La malla vectorial
+                  size:float=1000, # Tamaño de los elementos de la malla (en las unidades de la proyección de `layer`)
         ) -> None:
         self.size = size
         self.datos = datos
+        self.crs = datos.crs
     
     @classmethod
     def desde_capa(cls, 
                   capa:gpd.GeoDataFrame, # La capa que define la extensión de la malla 
-                  size:float # Tamaño de la mañña en unidades de la proyección
+                  size:float # Tamaño de la malla en unidades de la proyección
         ):
         xmin, ymin, xmax, ymax = capa.total_bounds
         cols = list(np.arange(xmin, xmax + size, size))
@@ -83,8 +84,8 @@ def agrega_puntos(self:Malla,
                   pesos:str=None # Columna con pesos para las unidades 
     ) -> Malla:
     """ Regresa una `Malla` con los conteos de puntos en cada elemento."""
-    if self.datos.crs != puntos.crs:
-        puntos = puntos.to_crs(self.datos.crs)
+    if self.crs != puntos.crs:
+        puntos = puntos.to_crs(self.crs)
     if 'index_right' in puntos.columns:
         puntos = puntos.drop(columns='index_right')
     
@@ -113,25 +114,7 @@ def agrega_puntos(self:Malla,
     else:
         agregado = agregado.rename({c:campo}, axis=1)
     agregado = agregado.merge(self.datos, on='grid_id', how='right').fillna(0)
-    agregado = gpd.GeoDataFrame(agregado).set_crs(self.datos.crs)
-    #     agregado = (puntos
-    #                 .sjoin(self.datos)
-    #                 .groupby(['grid_id'])
-    #                 .size()
-    #                 .reset_index()
-    #                 .rename({0:campo}, axis=1)
-    #                 .merge(self.datos, on='grid_id', how='right').fillna(0))
-    #     agregado = (gpd.GeoDataFrame(agregado)
-    #             .set_crs(self.datos.crs))
-    # else:
-    #     agregado = (puntos
-    #                 .sjoin(self.datos)
-    #                 .groupby([clasificacion, 'grid_id'])
-    #                 .size()
-    #                 .reset_index()
-    #                 .pivot(index='grid_id', columns=clasificacion, values=0)                    
-    #                 .merge(self.datos, on='grid_id', how='right')
-    #                 .fillna(0))
+    agregado = gpd.GeoDataFrame(agregado).set_crs(self.crs)
     m = Malla(agregado, self.size)
     return m
 
@@ -142,8 +125,8 @@ def agrega_lineas(self:Malla,
                   campo: str='longitud', # Nombre del campo en el que se guarda el resultado
                  ) -> Malla:
     """ Regresa una `Malla` con la longitud de las lineas agregadas en cada elemento."""
-    if lineas.crs != self.datos.crs:
-        lineas = lineas.to_crs(self.datos.crs) 
+    if lineas.crs != self.crs:
+        lineas = lineas.to_crs(self.crs) 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         union = (lineas
@@ -183,6 +166,7 @@ class Poligonos(Cobertura):
         ) -> None:
         self.id_col = id_col
         self.datos = datos
+        self.crs = datos.crs
     
     @classmethod
     def desde_archivo(cls,
@@ -209,8 +193,8 @@ def agrega_puntos(self:Poligonos,
                                           # (en este caso se ignora `campo`)
                 ) -> Poligonos:
     """ Regresa un `Poligonos` con los conteos de puntos en cada unidad."""
-    if self.datos.crs != puntos.crs:
-        puntos = puntos.to_crs(self.datos.crs)
+    if self.crs != puntos.crs:
+        puntos = puntos.to_crs(self.crs)
     if 'index_right' in puntos.columns:
         puntos = puntos.drop(columns='index_right')
     if self.id_col in puntos.columns:
@@ -234,6 +218,6 @@ def agrega_puntos(self:Poligonos,
                     .merge(self.datos, on=self.id_col, how='right')
                     .fillna(0))
     agregado = (gpd.GeoDataFrame(agregado)
-                .set_crs(self.datos.crs))
+                .set_crs(self.crs))
     p = Poligonos(agregado, self.id_col)
     return p
