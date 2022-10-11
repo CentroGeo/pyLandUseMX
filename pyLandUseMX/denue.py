@@ -43,7 +43,7 @@ def filtra_scian(
 @patch
 def agrega_en_usos(
         self: Denue,
-        categorias: dict, # Diccionario con la asosiación entre cadenas de búsqueda en codigo_act y categorías de Uso de Suelo
+        categorias: dict, # Diccionario con la asociación entre cadenas de búsqueda en codigo_act y categorías de Uso de Suelo
         columna:str='Categoria' # Nombre de la columna en la que se va a guardar la categoría
     ) -> Denue:
     datos = self.datos.copy()
@@ -51,3 +51,14 @@ def agrega_en_usos(
     for cat, pat in categorias.items():
         datos.loc[datos.codigo_act.str.contains('|'.join(pat)), 'Categoria'] = cat
     return Denue(datos)
+
+# %% ../nbs/api/02_denue.ipynb 23
+@patch
+def pesa_unidades(self:Denue,
+                  pesos:dict, # Diccionario con la relación per_ocu: peso asignado
+                  columna:str='pesos', # Columna en donde vamos a guardar los pesos
+    )->Denue:
+    datos = self.datos.copy()
+    datos[columna] = datos.per_ocu.map(pesos)
+    return Denue(datos)
+

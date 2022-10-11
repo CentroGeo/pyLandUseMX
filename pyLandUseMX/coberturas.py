@@ -14,6 +14,7 @@ import numpy as np
 from .descargas import *
 from .denue import *
 import warnings
+import random
 
 # %% ../nbs/api/01_coberturas.ipynb 6
 class Cobertura(ABC):
@@ -78,38 +79,63 @@ class Malla(Cobertura):
 def agrega_puntos(self:Malla,
                   puntos:gpd.GeoDataFrame, # La malla en la que se va a agregar
                   campo: str='cuenta', # Nombre del campo en el que se guarda el resultado
-                  clasificacion: str=None # Columna de `puntos` que clasifica a las observaciones. En este caso se agregan
-                                          # tantas columnas a la malla como valores distintos haya en la columna
-                                          # (en este caso se ignora `campo`)
-                ) -> Malla:
+                  clasificacion: str=None, # Columna de `puntos` que clasifica a las observaciones (ignora `campo`) 
+                  pesos:str=None # Columna con pesos para las unidades 
+    ) -> Malla:
     """ Regresa una `Malla` con los conteos de puntos en cada elemento."""
     if self.datos.crs != puntos.crs:
         puntos = puntos.to_crs(self.datos.crs)
     if 'index_right' in puntos.columns:
         puntos = puntos.drop(columns='index_right')
-    if clasificacion is None:
-        agregado = (puntos
-                    .sjoin(self.datos)
-                    .groupby('grid_id')
-                    .size()
-                    .reset_index()
-                    .rename({0:campo}, axis=1)
-                    .merge(self.datos, on='grid_id', how='right').fillna(0))
-        agregado = (gpd.GeoDataFrame(agregado)
-                .set_crs(self.datos.crs))
+    
+    cols_agrupa = ['grid_id']
+    if clasificacion is not None:
+        cols_agrupa.append(clasificacion)
+    
+    if pesos is None:
+        # Tenemos que seleccionar una columna calquiera pero que no sea clasificacion
+        columnas = list(puntos.columns)
+        columnas.remove(clasificacion) if clasificacion in columnas else None
+        c = random.choice(columnas)
+        agregador = {c: 'count'}
     else:
-        agregado = (puntos
-                    .sjoin(self.datos)
-                    .groupby([clasificacion, 'grid_id'])
-                    .size()
-                    .reset_index()
-                    .pivot(index='grid_id', columns=clasificacion, values=0)                    
-                    .merge(self.datos, on='grid_id', how='right')
-                    .fillna(0))
+        c = pesos
+        agregador = {pesos: 'sum'}
+
+    agregado = (puntos
+                .sjoin(self.datos)
+                .groupby(cols_agrupa)
+                .aggregate(agregador)
+                .reset_index()
+                )
+    if clasificacion is not None:
+        agregado = agregado.pivot(index='grid_id', columns=clasificacion, values=c)
+    else:
+        agregado = agregado.rename({c:campo}, axis=1)
+    agregado = agregado.merge(self.datos, on='grid_id', how='right').fillna(0)
+    agregado = gpd.GeoDataFrame(agregado).set_crs(self.datos.crs)
+    #     agregado = (puntos
+    #                 .sjoin(self.datos)
+    #                 .groupby(['grid_id'])
+    #                 .size()
+    #                 .reset_index()
+    #                 .rename({0:campo}, axis=1)
+    #                 .merge(self.datos, on='grid_id', how='right').fillna(0))
+    #     agregado = (gpd.GeoDataFrame(agregado)
+    #             .set_crs(self.datos.crs))
+    # else:
+    #     agregado = (puntos
+    #                 .sjoin(self.datos)
+    #                 .groupby([clasificacion, 'grid_id'])
+    #                 .size()
+    #                 .reset_index()
+    #                 .pivot(index='grid_id', columns=clasificacion, values=0)                    
+    #                 .merge(self.datos, on='grid_id', how='right')
+    #                 .fillna(0))
     m = Malla(agregado, self.size)
     return m
 
-# %% ../nbs/api/01_coberturas.ipynb 27
+# %% ../nbs/api/01_coberturas.ipynb 31
 @patch
 def agrega_lineas(self:Malla,
                   lineas:gpd.GeoDataFrame, # La capa de líneas a agregar
@@ -133,7 +159,7 @@ def agrega_lineas(self:Malla,
     m = Malla(union, self.size)
     return m
 
-# %% ../nbs/api/01_coberturas.ipynb 37
+# %% ../nbs/api/01_coberturas.ipynb 41
 @patch
 def to_xarray(self:Malla,
               campos: list=None # Lista de campos a convertir, se convierten en bandas del raster
@@ -147,7 +173,7 @@ def to_xarray(self:Malla,
                        )
     return cube
 
-# %% ../nbs/api/01_coberturas.ipynb 43
+# %% ../nbs/api/01_coberturas.ipynb 47
 class Poligonos(Cobertura):
     """ Representa una cobertura de polígonos de forma arbitraria 
         para procesar variables de uso de suelo."""
@@ -173,7 +199,7 @@ class Poligonos(Cobertura):
     def agrega_puntos(self, puntos: gpd.GeoDataFrame, campo: str=None, clasificacion: str=None):
         pass    
 
-# %% ../nbs/api/01_coberturas.ipynb 48
+# %% ../nbs/api/01_coberturas.ipynb 52
 @patch
 def agrega_puntos(self:Poligonos,
                   puntos:gpd.GeoDataFrame, # La malla en la que se va a agregar
