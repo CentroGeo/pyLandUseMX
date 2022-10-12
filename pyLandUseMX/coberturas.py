@@ -146,35 +146,48 @@ def agrega_lineas(self:Malla,
 # %% ../nbs/api/01_coberturas.ipynb 42
 @patch
 def agrega_manzanas(self:Malla,
-                    poligonos:gpd.GeoDataFrame, # Las manzanas (`descarga_manzanas`).
+                    manzanas:gpd.GeoDataFrame, # Las manzanas (`descarga_manzanas_ejempolo`).
                     variables:dict, # Diccionario de las variables que querems agregar y el método para agregarlas (p, ej. {'OCUPVIVPAR':'sum'})
                     metodo: str='centro' # centro/area, método para resolver sobreposiciones
     ) -> Malla:
     pd.options.mode.chained_assignment = None
-    if poligonos.crs != self.crs:
-        poligonos = poligonos.to_crs(self.crs)
+    if manzanas.crs != self.crs:
+        manzanas = manzanas.to_crs(self.crs)
     # Primero asignamos el id de la malla a todos los contenidos
-    poligonos = (poligonos
+    manzanas = (manzanas
                  .sjoin(self.datos, predicate='covered_by', how='left')
                  .drop(columns='index_right'))
     # resolvemos los demás de acuerdo al método selecionado
-    if metodo == 'centro':
-        sin_asignar = poligonos.loc[poligonos['grid_id'].isna(),:]
+    sin_asignar = manzanas.loc[manzanas['grid_id'].isna(),:]
+    if metodo == 'centro':       
         sin_asignar['geometry'] = sin_asignar['geometry'].centroid
         # sin_asignar.loc[:, 'geometry'] = sin_asignar['geometry'].centroid
         sin_asignar = (sin_asignar
                       .drop(columns='grid_id')
                       .sjoin(self.datos)
                       .drop(columns='index_right'))
+    elif metodo == 'area':
+        sin_asignar = (sin_asignar
+                      .drop(columns='grid_id')
+                      .overlay(self.datos))
+        sin_asignar['area'] = sin_asignar.geometry.area
+        sin_asignar = (sin_asignar
+                      .sort_values('area')
+                      .drop_duplicates(sin_asignar.columns, keep='last')
+                      .drop(columns='geometry'))
+    else:
+        print("metodo debe ser centro o area")
+        raise NotImplementedError
+
 
     # Completamos los grid_id en los poligonos    
-    poligonos = poligonos.merge(sin_asignar[['CVEGEO', 'grid_id']], on='CVEGEO', how='left')
-    poligonos['grid_id'] = (poligonos['grid_id_y']
-                            .fillna(poligonos['grid_id_x']))
-    poligonos = poligonos.drop(columns=['grid_id_x', 'grid_id_y'])
-    poligonos['grid_id'] = poligonos['grid_id'].astype(int)
+    manzanas = manzanas.merge(sin_asignar[['CVEGEO', 'grid_id']], on='CVEGEO', how='left')
+    manzanas['grid_id'] = (manzanas['grid_id_y']
+                            .fillna(manzanas['grid_id_x']))
+    manzanas = manzanas.drop(columns=['grid_id_x', 'grid_id_y'])
+    manzanas['grid_id'] = manzanas['grid_id'].astype(int)
     # Agrupamos y agregamos
-    malla = (poligonos
+    malla = (manzanas
              .drop(columns=['CVEGEO', 'geometry'])
              .groupby('grid_id')
              .aggregate(variables)
@@ -185,7 +198,7 @@ def agrega_manzanas(self:Malla,
     return malla
 
 
-# %% ../nbs/api/01_coberturas.ipynb 48
+# %% ../nbs/api/01_coberturas.ipynb 50
 @patch
 def to_xarray(self:Malla,
               campos: list=None # Lista de campos a convertir, se convierten en bandas del raster
@@ -199,7 +212,7 @@ def to_xarray(self:Malla,
                        )
     return cube
 
-# %% ../nbs/api/01_coberturas.ipynb 54
+# %% ../nbs/api/01_coberturas.ipynb 56
 class Poligonos(Cobertura):
     """ Representa una cobertura de polígonos de forma arbitraria 
         para procesar variables de uso de suelo."""
@@ -226,7 +239,7 @@ class Poligonos(Cobertura):
     def agrega_puntos(self, puntos: gpd.GeoDataFrame, campo: str=None, clasificacion: str=None):
         pass    
 
-# %% ../nbs/api/01_coberturas.ipynb 59
+# %% ../nbs/api/01_coberturas.ipynb 61
 @patch
 def agrega_puntos(self:Poligonos,
                   puntos:gpd.GeoDataFrame, # La malla en la que se va a agregar
@@ -263,4 +276,24 @@ def agrega_puntos(self:Poligonos,
     agregado = (gpd.GeoDataFrame(agregado)
                 .set_crs(self.crs))
     p = Poligonos(agregado, self.id_col)
+    return p
+
+# %% ../nbs/api/01_coberturas.ipynb 67
+@patch
+def agrega_manzanas(self:Poligonos, 
+                    manzanas:gpd.GeoDataFrame, # Las manzanas (`descarga_manzanas_ejempolo`).
+                    variables:dict # Diccionario de las variables que querems agregar y el método para agregarlas (p, ej. {'OCUPVIVPAR':'sum'})
+    )-> Poligonos:
+    if manzanas.crs != self.crs:
+        manzanas = manzanas.to_crs(self.crs)
+    relacion = manzanas[["CVEGEO", "geometry"]]
+    relacion["geometry"] = manzanas.centroid
+    relacion = relacion.sjoin(self.datos).drop(columns=['index_right', 'geometry'])
+    manzanas = manzanas.merge(relacion, on="CVEGEO")
+    poligonos = (manzanas
+                 .groupby(self.id_col)
+                 .aggregate(variables)
+                 .reset_index())
+    poligonos = self.datos.merge(poligonos, on=self.id_col, how='left').fillna(0)
+    p = Poligonos(poligonos, self.id_col)
     return p
