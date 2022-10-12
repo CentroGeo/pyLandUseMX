@@ -147,6 +147,7 @@ def agrega_lineas(self:Malla,
 @patch
 def agrega_manzanas(self:Malla,
                     poligonos:gpd.GeoDataFrame, # Las manzanas (`descarga_manzanas`).
+                    variables:dict, # Diccionario de lasd variables que querems agregar y el método para agregarlas {'OCUPVIVPAR':'sum'} 
                     metodo: str # centro/area, método para resolver sobreposiciones
     ) -> Malla:
     pd.options.mode.chained_assignment = None
