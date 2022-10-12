@@ -12,7 +12,9 @@ website:
   open-graph: true
   repo-actions: [issue]
   navbar:
-    background: primary
+    background: secondary
+    logo: "logo_centrogeo.png"
+    logo-href: "https://www.centrogeo.org.mx/"
     search: true
     right:
       - icon: github
@@ -21,12 +23,15 @@ website:
         href: https://twitter.com/plablo09
         aria-label: plablo09 Twitter    
   sidebar:
-    style: floating
+    style: docked
+    collapse-level: 1
     # contents: 
     #   - auto: "/*.ipynb"
     #   - section: Tutoriales
-    #     contents: [tutoriales]
+    #     contents: 
+    #       - tutoriales
     #   - section: API
-    #     contents: [api]
+    #     contents: 
+    #       - api
 
 metadata-files: [nbdev.yml, sidebar.yml]
