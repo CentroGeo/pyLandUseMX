@@ -147,8 +147,8 @@ def agrega_lineas(self:Malla,
 @patch
 def agrega_manzanas(self:Malla,
                     poligonos:gpd.GeoDataFrame, # Las manzanas (`descarga_manzanas`).
-                    variables:dict, # Diccionario de lasd variables que querems agregar y el método para agregarlas {'OCUPVIVPAR':'sum'} 
-                    metodo: str # centro/area, método para resolver sobreposiciones
+                    variables:dict, # Diccionario de las variables que querems agregar y el método para agregarlas (p, ej. {'OCUPVIVPAR':'sum'})
+                    metodo: str='centro' # centro/area, método para resolver sobreposiciones
     ) -> Malla:
     pd.options.mode.chained_assignment = None
     if poligonos.crs != self.crs:
@@ -156,7 +156,7 @@ def agrega_manzanas(self:Malla,
     # Primero asignamos el id de la malla a todos los contenidos
     poligonos = (poligonos
                  .sjoin(self.datos, predicate='covered_by', how='left')
-                 .loc[:, ['grid_id', 'CVEGEO', 'geometry']])
+                 .drop(columns='index_right'))
     # resolvemos los demás de acuerdo al método selecionado
     if metodo == 'centro':
         sin_asignar = poligonos.loc[poligonos['grid_id'].isna(),:]
@@ -173,11 +173,19 @@ def agrega_manzanas(self:Malla,
                             .fillna(poligonos['grid_id_x']))
     poligonos = poligonos.drop(columns=['grid_id_x', 'grid_id_y'])
     poligonos['grid_id'] = poligonos['grid_id'].astype(int)
+    # Agrupamos y agregamos
+    malla = (poligonos
+             .drop(columns=['CVEGEO', 'geometry'])
+             .groupby('grid_id')
+             .aggregate(variables)
+             .reset_index())
+    malla = self.datos.merge(malla, on='grid_id', how='left').fillna(0)
+    malla = Malla(malla, self.size)
     # return poligonos
-    return poligonos
+    return malla
 
 
-# %% ../nbs/api/01_coberturas.ipynb 46
+# %% ../nbs/api/01_coberturas.ipynb 48
 @patch
 def to_xarray(self:Malla,
               campos: list=None # Lista de campos a convertir, se convierten en bandas del raster
@@ -191,7 +199,7 @@ def to_xarray(self:Malla,
                        )
     return cube
 
-# %% ../nbs/api/01_coberturas.ipynb 52
+# %% ../nbs/api/01_coberturas.ipynb 54
 class Poligonos(Cobertura):
     """ Representa una cobertura de polígonos de forma arbitraria 
         para procesar variables de uso de suelo."""
@@ -218,7 +226,7 @@ class Poligonos(Cobertura):
     def agrega_puntos(self, puntos: gpd.GeoDataFrame, campo: str=None, clasificacion: str=None):
         pass    
 
-# %% ../nbs/api/01_coberturas.ipynb 57
+# %% ../nbs/api/01_coberturas.ipynb 59
 @patch
 def agrega_puntos(self:Poligonos,
                   puntos:gpd.GeoDataFrame, # La malla en la que se va a agregar
