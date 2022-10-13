@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import geopandas as gpd
 import rasterio
+from pyproj.crs import crs
 from rasterio.features import shapes
 from shapely.geometry import Polygon
 from geocube.api.core import make_geocube
@@ -39,6 +40,21 @@ class Cobertura(ABC):
                       campo:str
         ):
         """ Debe proveer la funcionalidad para agregar líneas en los elementos de la cobertura."""
+        pass
+    
+    @abstractmethod
+    def agrega_manzanas(self,
+                        manzanas:gpd.GeoDataFrame,
+                        variables: str                        
+        ):
+        """ Debe agregar variables del censo en la cobertura. """
+        pass
+
+    @abstractmethod
+    def to_crs(self,
+               to_crs:Union[int, str, crs.CRS]
+    ):
+        """ Se encarga de transformar de coordenadas."""
         pass
 
 # %% ../nbs/api/01_coberturas.ipynb 8
@@ -89,16 +105,31 @@ class Malla(Cobertura):
                         shapes(image, mask=mask, transform=src.transform))
                 )
         geoms = list(results)
-        gdf = gpd.GeoDataFrame.from_features(geoms).set_crs(src.crs)
+        gdf = gpd.GeoDataFrame.from_features(geoms).set_crs(src.crs.to_string())
+        print(gdf.crs)
         return cls(gdf, src.res[0])
 
+    def to_crs(self, to_crs: Union[int, str, crs.CRS]):
+        ...
+
     def agrega_lineas(self, lineas: gpd.GeoDataFrame, campo: str=None):
-        pass
+        ...
     
     def agrega_puntos(self, puntos: gpd.GeoDataFrame, campo: str=None, clasificacion: str=None):
-        pass
+        ...
+    def agrega_manzanas(self, manzanas: gpd.GeoDataFrame, variables):
+        ...
 
 # %% ../nbs/api/01_coberturas.ipynb 18
+@patch
+def to_crs(self:Malla,
+           to_crs: Union[int, str, crs.CRS] # El crs al que queremos reproyectar
+    ) -> Malla:
+    datos = self.datos.to_crs(to_crs)
+    m = Malla(datos, self.size)
+    return m
+
+# %% ../nbs/api/01_coberturas.ipynb 21
 @patch
 def agrega_puntos(self:Malla,
                   puntos:gpd.GeoDataFrame, # La malla en la que se va a agregar
@@ -141,7 +172,7 @@ def agrega_puntos(self:Malla,
     m = Malla(agregado, self.size)
     return m
 
-# %% ../nbs/api/01_coberturas.ipynb 34
+# %% ../nbs/api/01_coberturas.ipynb 37
 @patch
 def agrega_lineas(self:Malla,
                   lineas:gpd.GeoDataFrame, # La capa de líneas a agregar
@@ -165,7 +196,7 @@ def agrega_lineas(self:Malla,
     m = Malla(union, self.size)
     return m
 
-# %% ../nbs/api/01_coberturas.ipynb 45
+# %% ../nbs/api/01_coberturas.ipynb 48
 @patch
 def agrega_manzanas(self:Malla,
                     manzanas:gpd.GeoDataFrame, # Las manzanas (`descarga_manzanas_ejempolo`).
@@ -220,7 +251,7 @@ def agrega_manzanas(self:Malla,
     return malla
 
 
-# %% ../nbs/api/01_coberturas.ipynb 53
+# %% ../nbs/api/01_coberturas.ipynb 56
 @patch
 def to_xarray(self:Malla,
               campos: list=None # Lista de campos a convertir, se convierten en bandas del raster
@@ -234,7 +265,7 @@ def to_xarray(self:Malla,
                        )
     return cube
 
-# %% ../nbs/api/01_coberturas.ipynb 59
+# %% ../nbs/api/01_coberturas.ipynb 62
 class Poligonos(Cobertura):
     """ Representa una cobertura de polígonos de forma arbitraria 
         para procesar variables de uso de suelo."""
@@ -254,14 +285,28 @@ class Poligonos(Cobertura):
         ):
         gdf = gpd.read_file(path)
         return cls(gdf, id_col)
-
+    def to_crs(self, to_crs: Union[int, str, crs.CRS]):
+        ...
+        
     def agrega_lineas(self, lineas: gpd.GeoDataFrame, campo: str=None):
         pass
     
     def agrega_puntos(self, puntos: gpd.GeoDataFrame, campo: str=None, clasificacion: str=None):
-        pass    
+        pass
 
-# %% ../nbs/api/01_coberturas.ipynb 64
+    def agrega_manzanas(self, manzanas: gpd.GeoDataFrame, variables):
+        ...
+
+# %% ../nbs/api/01_coberturas.ipynb 67
+@patch
+def to_crs(self:Poligonos,
+           to_crs: Union[int, str, crs.CRS] # El crs al que queremos reproyectar
+    ) -> Malla:
+    datos = self.datos.to_crs(to_crs)
+    m = Poligonos(datos, self.id_col)
+    return m
+
+# %% ../nbs/api/01_coberturas.ipynb 70
 @patch
 def agrega_puntos(self:Poligonos,
                   puntos:gpd.GeoDataFrame, # La malla en la que se va a agregar
@@ -300,7 +345,7 @@ def agrega_puntos(self:Poligonos,
     p = Poligonos(agregado, self.id_col)
     return p
 
-# %% ../nbs/api/01_coberturas.ipynb 70
+# %% ../nbs/api/01_coberturas.ipynb 76
 @patch
 def agrega_manzanas(self:Poligonos, 
                     manzanas:gpd.GeoDataFrame, # Las manzanas (`descarga_manzanas_ejempolo`).
