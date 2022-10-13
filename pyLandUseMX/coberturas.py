@@ -347,6 +347,35 @@ def agrega_puntos(self:Poligonos,
 
 # %% ../nbs/api/01_coberturas.ipynb 76
 @patch
+def agrega_lineas(self:Poligonos,
+                  lineas:gpd.GeoDataFrame, # La capa de líneas a agregar
+                  campo: str='longitud', # Nombre del campo en el que se guarda el resultado
+                  proporcion:bool=True # ¿Debemos hacer el cálculo por unidad de área?
+                 ) -> Malla:
+    """ Regresa un `Poligonos` con la longitud de las lineas agregadas en cada elemento."""
+    if lineas.crs != self.crs:
+        lineas = lineas.to_crs(self.crs) 
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        union = (lineas
+                .overlay(self.datos, how='union')
+                .dissolve(by=self.id_col)
+                .length.reset_index()
+                .rename({0:campo}, axis=1)   
+            )
+    union = (self.datos
+            .merge(union, on=self.id_col, how='left')
+            .fillna(0)
+        )
+    if proporcion:
+        union['area'] = union.geometry.area
+        union[campo] = union[campo].divide(union['area'])
+        union = union.drop(columns='area')
+    p = Poligonos(union, self.id_col)
+    return p
+
+# %% ../nbs/api/01_coberturas.ipynb 80
+@patch
 def agrega_manzanas(self:Poligonos, 
                     manzanas:gpd.GeoDataFrame, # Las manzanas (`descarga_manzanas_ejempolo`).
                     variables:dict # Diccionario de las variables que querems agregar y el método para agregarlas (p, ej. {'OCUPVIVPAR':'sum'})
