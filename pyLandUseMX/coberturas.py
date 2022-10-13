@@ -9,6 +9,8 @@ from fastcore.basics import *
 import matplotlib.pyplot as plt
 import pandas as pd
 import geopandas as gpd
+import rasterio
+from rasterio.features import shapes
 from shapely.geometry import Polygon
 from geocube.api.core import make_geocube
 import numpy as np
@@ -16,6 +18,8 @@ from .descargas import *
 from .denue import *
 import warnings
 import random
+from typing import Union
+from pathlib import Path
 
 # %% ../nbs/api/01_coberturas.ipynb 6
 class Cobertura(ABC):
@@ -69,6 +73,24 @@ class Malla(Cobertura):
             .rename({'index':'grid_id'}, axis=1))
         malla = cls(grid, size)
         return malla
+    
+    @classmethod
+    def desde_raster(cls,
+                    raster: Union[str, Path] # El raster a partir del que vamos a crear la malla.
+        ):
+        mask = None
+        with rasterio.Env():
+            with rasterio.open(raster) as src:
+                image = src.read(1).astype('float32') # Habría que probar esto con raster diferentes
+                results = (
+                    {'properties': {'grid_id': i}, 'geometry': s}
+                    for i, (s, v) 
+                    in enumerate(
+                        shapes(image, mask=mask, transform=src.transform))
+                )
+        geoms = list(results)
+        gdf = gpd.GeoDataFrame.from_features(geoms).set_crs(src.crs)
+        return cls(gdf, src.res[0])
 
     def agrega_lineas(self, lineas: gpd.GeoDataFrame, campo: str=None):
         pass
@@ -76,7 +98,7 @@ class Malla(Cobertura):
     def agrega_puntos(self, puntos: gpd.GeoDataFrame, campo: str=None, clasificacion: str=None):
         pass
 
-# %% ../nbs/api/01_coberturas.ipynb 15
+# %% ../nbs/api/01_coberturas.ipynb 18
 @patch
 def agrega_puntos(self:Malla,
                   puntos:gpd.GeoDataFrame, # La malla en la que se va a agregar
@@ -119,7 +141,7 @@ def agrega_puntos(self:Malla,
     m = Malla(agregado, self.size)
     return m
 
-# %% ../nbs/api/01_coberturas.ipynb 31
+# %% ../nbs/api/01_coberturas.ipynb 34
 @patch
 def agrega_lineas(self:Malla,
                   lineas:gpd.GeoDataFrame, # La capa de líneas a agregar
@@ -143,7 +165,7 @@ def agrega_lineas(self:Malla,
     m = Malla(union, self.size)
     return m
 
-# %% ../nbs/api/01_coberturas.ipynb 42
+# %% ../nbs/api/01_coberturas.ipynb 45
 @patch
 def agrega_manzanas(self:Malla,
                     manzanas:gpd.GeoDataFrame, # Las manzanas (`descarga_manzanas_ejempolo`).
@@ -198,7 +220,7 @@ def agrega_manzanas(self:Malla,
     return malla
 
 
-# %% ../nbs/api/01_coberturas.ipynb 50
+# %% ../nbs/api/01_coberturas.ipynb 53
 @patch
 def to_xarray(self:Malla,
               campos: list=None # Lista de campos a convertir, se convierten en bandas del raster
@@ -212,7 +234,7 @@ def to_xarray(self:Malla,
                        )
     return cube
 
-# %% ../nbs/api/01_coberturas.ipynb 56
+# %% ../nbs/api/01_coberturas.ipynb 59
 class Poligonos(Cobertura):
     """ Representa una cobertura de polígonos de forma arbitraria 
         para procesar variables de uso de suelo."""
@@ -239,7 +261,7 @@ class Poligonos(Cobertura):
     def agrega_puntos(self, puntos: gpd.GeoDataFrame, campo: str=None, clasificacion: str=None):
         pass    
 
-# %% ../nbs/api/01_coberturas.ipynb 61
+# %% ../nbs/api/01_coberturas.ipynb 64
 @patch
 def agrega_puntos(self:Poligonos,
                   puntos:gpd.GeoDataFrame, # La malla en la que se va a agregar
@@ -278,7 +300,7 @@ def agrega_puntos(self:Poligonos,
     p = Poligonos(agregado, self.id_col)
     return p
 
-# %% ../nbs/api/01_coberturas.ipynb 67
+# %% ../nbs/api/01_coberturas.ipynb 70
 @patch
 def agrega_manzanas(self:Poligonos, 
                     manzanas:gpd.GeoDataFrame, # Las manzanas (`descarga_manzanas_ejempolo`).
