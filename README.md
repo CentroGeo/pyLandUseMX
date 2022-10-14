@@ -296,7 +296,7 @@ oficinas y comercio. Entonces, a partir de una selección sobre las
 claves SCIAN podemos hacer:
 
 ``` python
-pth = descarga_denue('ejemplo')
+pth = descarga_denue(tipo='ejemplo')
 denue = Denue.desde_archivo(pth)
 categorias = {
     'Manufacturas': ['^31.*5$', '^32.*5$', '^33.*5$'],
