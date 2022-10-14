@@ -4,7 +4,7 @@
 __all__ = ['DOWNLOADS_PATH', 'descarga_denue', 'descarga_redes', 'descarga_poligonos_ciudades', 'descarga_colonias_cdmx',
            'descarga_manzanas_ejemplo', 'descarga_raster_ejemplo', 'descarga_datos_completos']
 
-# %% ../nbs/api/00_descargas.ipynb 3
+# %% ../nbs/api/00_descargas.ipynb 4
 import pandas as pd
 import geopandas as gpd
 import requests
@@ -13,11 +13,13 @@ import os
 from zipfile import ZipFile
 import shutil
 from pathlib import Path
+from typing import Union
 
 DOWNLOADS_PATH = os.path.abspath("../../datos/descargas/")
 
-# %% ../nbs/api/00_descargas.ipynb 5
+# %% ../nbs/api/00_descargas.ipynb 6
 def descarga_denue(
+        path:Union[str,Path]=DOWNLOADS_PATH, # ¿Dónde guardamos el archivo?
         tipo:str='zmvm_2022' # Qué archivo vamos a descargar: ejemplo, zmvm_2022, zmvm_full, mexico_2022, mexico_full
     ) -> None:
     Path(DOWNLOADS_PATH).mkdir(parents=True, exist_ok=True)
@@ -40,8 +42,10 @@ def descarga_denue(
     
 
 
-# %% ../nbs/api/00_descargas.ipynb 8
-def descarga_redes():
+# %% ../nbs/api/00_descargas.ipynb 9
+def descarga_redes(
+        path:Union[str,Path]=DOWNLOADS_PATH, # ¿Dónde guardamos el archivo?
+    ):
     Path(DOWNLOADS_PATH).mkdir(parents=True, exist_ok=True)
     fname = 'red_zmvm.gpkg'
     absp = os.path.abspath(os.path.join(DOWNLOADS_PATH, fname))
@@ -53,8 +57,10 @@ def descarga_redes():
         open(absp, 'wb').write(r.content)
     return absp
 
-# %% ../nbs/api/00_descargas.ipynb 11
-def descarga_poligonos_ciudades():
+# %% ../nbs/api/00_descargas.ipynb 12
+def descarga_poligonos_ciudades(
+        path:Union[str,Path]=DOWNLOADS_PATH, # ¿Dónde guardamos el archivo?
+    ):
     Path(DOWNLOADS_PATH).mkdir(parents=True, exist_ok=True)
     fname = 'silhuetas.shp.zip'
     absp = os.path.abspath(os.path.join(DOWNLOADS_PATH, fname))
@@ -66,8 +72,10 @@ def descarga_poligonos_ciudades():
         open(absp, 'wb').write(r.content)
     return absp
 
-# %% ../nbs/api/00_descargas.ipynb 14
-def descarga_colonias_cdmx():
+# %% ../nbs/api/00_descargas.ipynb 15
+def descarga_colonias_cdmx(
+        path:Union[str,Path]=DOWNLOADS_PATH, # ¿Dónde guardamos el archivo?
+    ):
     Path(DOWNLOADS_PATH).mkdir(parents=True, exist_ok=True)
     fname = 'colonias_cdmx.zip'
     absp = os.path.abspath(os.path.join(DOWNLOADS_PATH, fname))
@@ -79,8 +87,10 @@ def descarga_colonias_cdmx():
         open(absp, 'wb').write(r.content)
     return absp
 
-# %% ../nbs/api/00_descargas.ipynb 17
-def descarga_manzanas_ejemplo():
+# %% ../nbs/api/00_descargas.ipynb 18
+def descarga_manzanas_ejemplo(
+        path:Union[str,Path]=DOWNLOADS_PATH, # ¿Dónde guardamos el archivo?
+    ):
     Path(DOWNLOADS_PATH).mkdir(parents=True, exist_ok=True)
     fname = 'manzanas_ejemplo.zip'
     absp = os.path.abspath(os.path.join(DOWNLOADS_PATH, fname))
@@ -92,8 +102,10 @@ def descarga_manzanas_ejemplo():
         open(absp, 'wb').write(r.content)
     return absp
 
-# %% ../nbs/api/00_descargas.ipynb 20
-def descarga_raster_ejemplo():
+# %% ../nbs/api/00_descargas.ipynb 21
+def descarga_raster_ejemplo(
+        path:Union[str,Path]=DOWNLOADS_PATH, # ¿Dónde guardamos el archivo?
+    ):
     Path(DOWNLOADS_PATH).mkdir(parents=True, exist_ok=True)
     fname = 'raster_ejemplo.tif'
     absp = os.path.abspath(os.path.join(DOWNLOADS_PATH, fname))
@@ -105,7 +117,7 @@ def descarga_raster_ejemplo():
         open(absp, 'wb').write(r.content)
     return absp
 
-# %% ../nbs/api/00_descargas.ipynb 22
+# %% ../nbs/api/00_descargas.ipynb 24
 def descarga_datos_completos():
     descarga_poligonos_ciudades()
     descarga_redes()
