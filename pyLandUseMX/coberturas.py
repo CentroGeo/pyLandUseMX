@@ -345,7 +345,7 @@ def agrega_puntos(self:Poligonos,
     p = Poligonos(agregado, self.id_col)
     return p
 
-# %% ../nbs/api/01_coberturas.ipynb 76
+# %% ../nbs/api/01_coberturas.ipynb 77
 @patch
 def agrega_lineas(self:Poligonos,
                   lineas:gpd.GeoDataFrame, # La capa de líneas a agregar
@@ -374,7 +374,7 @@ def agrega_lineas(self:Poligonos,
     p = Poligonos(union, self.id_col)
     return p
 
-# %% ../nbs/api/01_coberturas.ipynb 80
+# %% ../nbs/api/01_coberturas.ipynb 81
 @patch
 def agrega_manzanas(self:Poligonos, 
                     manzanas:gpd.GeoDataFrame, # Las manzanas (`descarga_manzanas_ejempolo`).

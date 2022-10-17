@@ -53,47 +53,45 @@ Ya con las dependencias instaladas:
 pip install git+https://github.com/CentroGeo/pyLandUseMX
 ```
 
-## Uso
+## Estructura
 
-La librería contiene una serie de módulos para realizar diferentes
-tareas para la extracción y proceso de variables de uso de suelo.
+La librería está organizada en torno a dos conceptos básicos:
+[`Cobertura`](https://CentroGeo.github.io/pyLandUseMX/api/coberturas.html#cobertura)
+y `UsoDeSuelo`. Las `Coberturas` son formas de *cubrir* un área de
+estudio (una zona metropolitana, por ejemplo) utilizando mallas
+regulares (cuadrados o hexágonos) o polígonos de forma arbitraria
+(colonias o AGEBS, por ejemplo). Estas coberturas definen la forma en la
+que vamos a agregar variables para estudiar el uso de suelo y proveen
+los métodos para estas agregaciones. El `UsoDeSuelo` integra una
+`cobertura` y una definición de las variables en torno a categorías
+definidas por el usuario, a partir de esta integración, la clase
+`UsoDeSuelo` provee diferentes herramientas para construir diferentes
+índices y variables a partir de los datos integrados en las coberturas.
+El módulo análisis provee métodos para analizar el uso de suelo.
 
-La organización general de los módulos es:
+Además de estos elemementos, la librería también contiene un módulo de
+`descargas` que permite descargar datos ya procesados que sirven como
+ejemplo para realizar diferentes tipos de análisis.
 
-- descargas: herramientas para bajar bases preprocesadas sobre el medio
-  urbano
-- coberturas: herramientas para la integración de datos en doferentes
-  soportes geográficos
-- análisis: métodos analíticos
+## Módulos
 
-## Descargas
+### Descargas
 
-El módulo de `descargas`, provee funciones para edscargar de nuestros
+El módulo de `descargas`, provee funciones para descargar de nuestros
 repositorios algunas capas que contienen variables relevantes para la
-extracción y análisis de uso de suelo en México. Cada función descarga
-los datos en la carpeta `datos/descargas` del directorio de instalación.
-Cada función regresa el *path* al archivo descargado.
+extracción y análisis de uso de suelo en México.
+
+Las funciónes admiten un *path* en donde descargar los datos. La
+documentación completa la encuentras en
+[API/descargas](api/00_descargas.ipynb)
 
 #### Red de transporte
 
-Por lo pronto tenemos disponible para descarga la red de transporte
+Tenemos disponible para descargar un recorte de la red de transporte
 obtenida de [OpenStreetMap](https://www.openstreetmap.org/) para la
 región central del país (la Zona Metropolitana del Valle de México).
-Para descargar estos datos simplemente llamamos a la función
-correspondiente:
 
-``` python
-pth_redes = descarga_redes() # descarga la red
-red = gpd.read_file(pth_redes) # leemos con geopandas
-red = red.loc[red.tag_id.isin([104,108,106,101])] # seleccionamos vialidades primarias
-red.plot()
-```
-
-    El archivo ya está descargado
-
-    <AxesSubplot:>
-
-![](index_files/figure-gfm/cell-2-output-3.png)
+![Vialidades primarias](red.png)
 
 #### Polígonos del Sistema Urbano Nacional
 
@@ -103,32 +101,18 @@ Nacional](https://www.gob.mx/conapo/acciones-y-programas/sistema-urbano-nacional
 (SUN) del 2018. Estos representan los límites de las principales
 aglomeraciones urbanas del país.
 
-``` python
-pth_sun = descarga_poligonos_ciudades()
-```
-
 ##### Colonias CDMX
 
 Tenemos una base de colonias para la CDMX basadas en la que se publica
 en [Datos Abiertos CDMX](https://datos.cdmx.gob.mx/) con algunas
 correcciones topológicas.
 
-``` python
-pth_colonias = descarga_colonias_cdmx()
-```
-
 #### DENUE
 
-Por lo pronto tenemos una base del DENUE integrada para el año 2022 en
-la Ciudad de México. Eventualmete estaremos publicando una actualización
-con datos históricos, desde el 2015, para las principales ciudades del
-país.
+Tenemos una base del DENUE integrada para el año 2022 en la Ciudad de
+México.
 
-``` python
-pth_denue = descarga_denue()
-```
-
-## Coberturas
+### Coberturas
 
 Regularmente para trabajos sobre análisis de uso de suelo y cobertura
 urbana se parte de la integración de la información en algún soporte
@@ -138,340 +122,87 @@ fuentes de datos en dos grandes tipos de soporte:
 - Mallas regulares
 - Polígonos arbitrarios
 
-Supongamos que tenemos una capa de puntos que representa la ocurrencia
-de algún uso de suelo y las vialidades primarias. Podemos fácilmente
-agregar las dos capas en una malla regular, obtener rasters y
-visualizarlos
-
-``` python
-puntos = gpd.read_file("../datos/points_sample.zip") # Leemos los puntos
-puntos = puntos.to_crs(32614)
-malla = Malla.desde_capa(puntos, 1000) # Creamos una malla del tamaño de los puntos
-malla = (malla
-             .agrega_puntos(puntos, campo="puntos")
-             .agrega_lineas(red, campo='metros_vialidad')
-             )
-malla.datos
-```
-
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>grid_id</th>
-      <th>puntos</th>
-      <th>geometry</th>
-      <th>metros_vialidad</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>0</td>
-      <td>0.0</td>
-      <td>POLYGON ((404331.782 2029252.065, 405331.782 2...</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>1</td>
-      <td>0.0</td>
-      <td>POLYGON ((404331.782 2030252.065, 405331.782 2...</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>2</td>
-      <td>0.0</td>
-      <td>POLYGON ((404331.782 2031252.065, 405331.782 2...</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>3</td>
-      <td>0.0</td>
-      <td>POLYGON ((404331.782 2032252.065, 405331.782 2...</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>4</td>
-      <td>0.0</td>
-      <td>POLYGON ((404331.782 2033252.065, 405331.782 2...</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>50499</th>
-      <td>50499</td>
-      <td>0.0</td>
-      <td>POLYGON ((639331.782 2238252.065, 640331.782 2...</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>50500</th>
-      <td>50500</td>
-      <td>1.0</td>
-      <td>POLYGON ((639331.782 2239252.065, 640331.782 2...</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>50501</th>
-      <td>50501</td>
-      <td>0.0</td>
-      <td>POLYGON ((639331.782 2240252.065, 640331.782 2...</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>50502</th>
-      <td>50502</td>
-      <td>0.0</td>
-      <td>POLYGON ((639331.782 2241252.065, 640331.782 2...</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>50503</th>
-      <td>50503</td>
-      <td>0.0</td>
-      <td>POLYGON ((639331.782 2242252.065, 640331.782 2...</td>
-      <td>0.0</td>
-    </tr>
-  </tbody>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><div width="50.0%"
+data-layout-align="center">
+<figure>
+<img src="malla.png" data-fig.extended="false" alt="Malla regular" />
+<figcaption aria-hidden="true">Malla regular</figcaption>
+</figure>
+</div></td>
+<td style="text-align: center;"><div width="50.0%"
+data-layout-align="center">
+<figure>
+<img src="poligonos.png" data-fig.extended="false" alt="Colonias" />
+<figcaption aria-hidden="true">Colonias</figcaption>
+</figure>
+</div></td>
+</tr>
+</tbody>
 </table>
-<p>50504 rows × 4 columns</p>
+
 </div>
 
-Podemos ver los rasters
+Las coberturas nos permiten agregar diferentes tipos de variables en
+mallas regulares (por ejemplo, a la izquierda la red de calles agregada
+en un raster) o en polígonos arbitrarios (a la derecha muestra de
+comercios agregados en colonias)
 
-``` python
-cube = malla.to_xarray()
-cube.metros_vialidad.plot()
-```
+<div>
 
-    <matplotlib.collections.QuadMesh>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><div width="50.0%"
+data-layout-align="center">
+<figure>
+<img src="red_raster.png" data-fig.extended="false"
+alt="Red agregada en raster" />
+<figcaption aria-hidden="true">Red agregada en raster</figcaption>
+</figure>
+</div></td>
+<td style="text-align: center;"><div width="50.0%"
+data-layout-align="center">
+<figure>
+<img src="comercios_colonias.png" data-fig.extended="false"
+alt="Comercios agregados en colonias" />
+<figcaption aria-hidden="true">Comercios agregados en
+colonias</figcaption>
+</figure>
+</div></td>
+</tr>
+</tbody>
+</table>
 
-![](index_files/figure-gfm/cell-4-output-2.png)
+</div>
 
-``` python
-cube = malla.to_xarray()
-cube.puntos.plot()
-```
-
-    <matplotlib.collections.QuadMesh>
-
-![](index_files/figure-gfm/cell-5-output-2.png)
-
-## DENUE
+### DENUE
 
 Este módulo provee funcionalidades para trabajar con datos del
 Directorio Nacional de Unidades Económicas y obtener algunas variables
-de uso de suelo.
-
-Permite seleccionar actividades económicas por clave SCIAN o agregar
+de uso de suelo. La clase
+[`Denue`](https://CentroGeo.github.io/pyLandUseMX/api/denue.html#denue)
+permite seleccionar actividades económicas por clave SCIAN o agregar
 estas actividades en categorías usando expresiones regulares.
 
-Por ejemplo, supongamos que queremos tomar los puntos del DENUE y
-generar una clasificación en tres grupos de usus de suelo: manufacturas,
-oficinas y comercio. Entonces, a partir de una selección sobre las
-claves SCIAN podemos hacer:
-
-``` python
-pth = descarga_denue(tipo='ejemplo')
-denue = Denue.desde_archivo(pth)
-categorias = {
-    'Manufacturas': ['^31.*5$', '^32.*5$', '^33.*5$'],
-    'Oficinas': ['^51', '^521', '^523', '^524', '^5312', '^5313', '^541', '^55'],
-    'Comercio': ['^46[123456]']
-}
-usos = denue.agrega_en_usos(categorias)
-usos.datos.loc[~usos.datos.Categoria.isnull()].head()
-```
-
-    El archivo ya está descargado
-
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
+> **Note**
+>
+> En el módulo `descargas` se puede obtener una base para la Ciudad de
+> México con el Denue 2022. La estructura de esa base sirve como ejemplo
+> para utilizar otras bases del Denue con la librería
 
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>nom_estab</th>
-      <th>raz_social</th>
-      <th>codigo_act</th>
-      <th>nombre_act</th>
-      <th>per_ocu</th>
-      <th>tipoCenCom</th>
-      <th>cve_ent</th>
-      <th>cve_mun</th>
-      <th>cve_loc</th>
-      <th>ageb</th>
-      <th>...</th>
-      <th>index_right</th>
-      <th>OBJECTID</th>
-      <th>Shape_Leng</th>
-      <th>NOM_CIUDAD</th>
-      <th>Shape_Le_1</th>
-      <th>Shape_Area</th>
-      <th>CVE_SUN</th>
-      <th>SUN</th>
-      <th>geometry</th>
-      <th>Categoria</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>1</th>
-      <td>TIENDA NATURISTA EL ARTE DE LA NATURALEZA</td>
-      <td>None</td>
-      <td>464113</td>
-      <td>Comercio al por menor de productos naturistas,...</td>
-      <td>0 a 5 personas</td>
-      <td>None</td>
-      <td>09</td>
-      <td>007</td>
-      <td>0001</td>
-      <td>1814</td>
-      <td>...</td>
-      <td>53</td>
-      <td>54</td>
-      <td>630172.981156</td>
-      <td>Valle de México</td>
-      <td>630.172981</td>
-      <td>781912.110166</td>
-      <td>13</td>
-      <td>13.0</td>
-      <td>POINT (-99.06312 19.33782)</td>
-      <td>Comercio</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>SIN NOMBRE</td>
-      <td>None</td>
-      <td>461130</td>
-      <td>Comercio al por menor de frutas y verduras fre...</td>
-      <td>0 a 5 personas</td>
-      <td>None</td>
-      <td>09</td>
-      <td>008</td>
-      <td>0001</td>
-      <td>0423</td>
-      <td>...</td>
-      <td>53</td>
-      <td>54</td>
-      <td>630172.981156</td>
-      <td>Valle de México</td>
-      <td>630.172981</td>
-      <td>781912.110166</td>
-      <td>13</td>
-      <td>13.0</td>
-      <td>POINT (-99.25436 19.30129)</td>
-      <td>Comercio</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>ADMINISTRACION MERCADO CONCENTRACION VOCEADORES</td>
-      <td>GOBIERNO DE LA CIUDAD DE MEXICO</td>
-      <td>531311</td>
-      <td>Servicios de administración de bienes raíces</td>
-      <td>0 a 5 personas</td>
-      <td>MERCADO PUBLICO</td>
-      <td>09</td>
-      <td>007</td>
-      <td>0001</td>
-      <td>2371</td>
-      <td>...</td>
-      <td>53</td>
-      <td>54</td>
-      <td>630172.981156</td>
-      <td>Valle de México</td>
-      <td>630.172981</td>
-      <td>781912.110166</td>
-      <td>13</td>
-      <td>13.0</td>
-      <td>POINT (-99.03318 19.38744)</td>
-      <td>Oficinas</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>ABARROTES LA TIA</td>
-      <td>None</td>
-      <td>461110</td>
-      <td>Comercio al por menor en tiendas de abarrotes,...</td>
-      <td>0 a 5 personas</td>
-      <td>None</td>
-      <td>15</td>
-      <td>121</td>
-      <td>0001</td>
-      <td>1763</td>
-      <td>...</td>
-      <td>53</td>
-      <td>54</td>
-      <td>630172.981156</td>
-      <td>Valle de México</td>
-      <td>630.172981</td>
-      <td>781912.110166</td>
-      <td>13</td>
-      <td>13.0</td>
-      <td>POINT (-99.19269 19.58976)</td>
-      <td>Comercio</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>BIZUTERIA SIN NOMBRE</td>
-      <td>None</td>
-      <td>463215</td>
-      <td>Comercio al por menor de bisutería y accesorio...</td>
-      <td>0 a 5 personas</td>
-      <td>None</td>
-      <td>15</td>
-      <td>122</td>
-      <td>0001</td>
-      <td>0847</td>
-      <td>...</td>
-      <td>53</td>
-      <td>54</td>
-      <td>630172.981156</td>
-      <td>Valle de México</td>
-      <td>630.172981</td>
-      <td>781912.110166</td>
-      <td>13</td>
-      <td>13.0</td>
-      <td>POINT (-98.94058 19.31219)</td>
-      <td>Comercio</td>
-    </tr>
-  </tbody>
-</table>
-<p>5 rows × 21 columns</p>
 </div>
