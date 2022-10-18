@@ -334,9 +334,8 @@ def to_crs(self:Poligonos,
 def agrega_puntos(self:Poligonos,
                   puntos:gpd.GeoDataFrame, # La malla en la que se va a agregar
                   campo: str='cuenta', # Nombre del campo en el que se guarda el resultado
-                  clasificacion: str=None # Columna de `puntos` que clasifica a las observaciones. En este caso se agregan
-                                          # tantas columnas a la malla como valores distintos haya en la columna
-                                          # (en este caso se ignora `campo`)
+                  clasificacion: str=None, # Columna de `puntos` que clasifica a las observaciones. En este caso se agregan
+                  pesos:str=None # Columna con pesos para las unidades 
                 ) -> Poligonos:
     """ Regresa un `Poligonos` con los conteos de puntos en cada unidad."""
     if self.crs != puntos.crs:
@@ -345,30 +344,56 @@ def agrega_puntos(self:Poligonos,
         puntos = puntos.drop(columns='index_right')
     if self.id_col in puntos.columns:
         puntos = puntos.drop(columns=self.id_col)
-    if clasificacion is None:
-        agregado = (puntos
-                    .sjoin(self.datos)
-                    .groupby(self.id_col)
-                    .size()
-                    .reset_index()
-                    .rename({0:campo}, axis=1)
-                    .merge(self.datos, on=self.id_col, how='right').fillna(0))
 
+    cols_agrupa = [self.id_col]
+    if clasificacion is not None:
+        cols_agrupa.append(clasificacion)
+
+    if pesos is None:
+        # Tenemos que seleccionar una columna calquiera pero que no sea clasificacion
+        columnas = list(puntos.columns)
+        columnas.remove(clasificacion) if clasificacion in columnas else None
+        c = random.choice(columnas)
+        agregador = {c: 'count'}
     else:
-        agregado = (puntos
-                    .sjoin(self.datos)
-                    .groupby([clasificacion, self.id_col])
-                    .size()
-                    .reset_index()
-                    .pivot(index=self.id_col, columns=clasificacion, values=0)                    
-                    .merge(self.datos, on=self.id_col, how='right')
-                    .fillna(0))
+        c = pesos
+        agregador = {pesos: 'sum'}        
+
+    agregado = (puntos
+                .sjoin(self.datos)
+                .groupby(cols_agrupa)
+                .aggregate(agregador)
+                .reset_index()
+                )
+
+    if clasificacion is not None:
+        agregado = agregado.pivot(index=self.id_col, columns=clasificacion, values=c)
+        # agregado = (puntos
+        #             .sjoin(self.datos)
+        #             .groupby(self.id_col)
+        #             .size()
+        #             .reset_index()
+        #             .rename({0:campo}, axis=1)
+        #             .merge(self.datos, on=self.id_col, how='right').fillna(0))
+    else:
+        agregado = agregado.rename({c:campo}, axis=1)
+
+    # else:
+    #     agregado = (puntos
+    #                 .sjoin(self.datos)
+    #                 .groupby([clasificacion, self.id_col])
+    #                 .size()
+    #                 .reset_index()
+    #                 .pivot(index=self.id_col, columns=clasificacion, values=0)                    
+    #                 .merge(self.datos, on=self.id_col, how='right')
+    #                 .fillna(0))
+    agregado = agregado.merge(self.datos, on=self.id_col, how='right').fillna(0)
     agregado = (gpd.GeoDataFrame(agregado)
                 .set_crs(self.crs))
     p = Poligonos(agregado, self.id_col)
     return p
 
-# %% ../nbs/api/01_usodesuelo.ipynb 80
+# %% ../nbs/api/01_usodesuelo.ipynb 84
 @patch
 def agrega_lineas(self:Poligonos,
                   lineas:gpd.GeoDataFrame, # La capa de líneas a agregar
@@ -397,7 +422,7 @@ def agrega_lineas(self:Poligonos,
     p = Poligonos(union, self.id_col)
     return p
 
-# %% ../nbs/api/01_usodesuelo.ipynb 84
+# %% ../nbs/api/01_usodesuelo.ipynb 88
 @patch
 def agrega_manzanas(self:Poligonos, 
                     manzanas:gpd.GeoDataFrame, # Las manzanas (`descarga_manzanas_ejempolo`).
@@ -417,7 +442,7 @@ def agrega_manzanas(self:Poligonos,
     p = Poligonos(poligonos, self.id_col)
     return p
 
-# %% ../nbs/api/01_usodesuelo.ipynb 87
+# %% ../nbs/api/01_usodesuelo.ipynb 91
 @patch
 def copy(self:Poligonos):
     """ Regresa una copia del objeto"""
@@ -426,7 +451,7 @@ def copy(self:Poligonos):
                   nom_col=self.nom_col)
     return p
 
-# %% ../nbs/api/01_usodesuelo.ipynb 90
+# %% ../nbs/api/01_usodesuelo.ipynb 94
 class UsoDeSuelo(object):
     def __init__(self,
                  soporte: Soporte, # El soporte espacial de la capa
@@ -451,11 +476,83 @@ class UsoDeSuelo(object):
             try:
                 assert set(vars_mc).intersection(soporte.datos.columns) == set(vars_mc)
             except AssertionError:
-                raise ValueError("Las columnas de vars_mc deben estar en el soporte o ser None")
-            self.vars_mc = vars_mc
+                raise ValueError("Las columnas de vars_mc deben estar en el soporte o ser None")         
             columnas = columnas + vars_mc
+            self.vars_mc = vars_mc
         else:
             self.vars_mc = []
         soporte = soporte.copy()
         soporte.datos = soporte.datos[columnas]
         self.soporte = soporte
+
+    def copy(self):
+        u = UsoDeSuelo(self.soporte.copy(),
+                       vars_uso=self.vars_uso,
+                       vars_mc=self.vars_mc)
+        return u
+
+# %% ../nbs/api/01_usodesuelo.ipynb 103
+@patch
+def agrega_puntos(self:UsoDeSuelo,
+                  puntos:gpd.GeoDataFrame, # La malla en la que se va a agregar
+                  campo: str='cuenta', # Nombre del campo en el que se guarda el resultado
+                  clasificacion: str=None, # Columna de `puntos` que clasifica a las observaciones (ignora `campo`) 
+                  pesos:str=None, # Columna con pesos para las unidades
+                  tipo_var:str='uso' # uso/mc ¿qué tipo de variable estamos agregando                  
+
+    ) -> UsoDeSuelo:
+    soporte = self.soporte.copy()
+    soporte = soporte.agrega_puntos(puntos, campo=campo, clasificacion=clasificacion, pesos=pesos)
+    if clasificacion is None:
+        vars = [campo]
+    else:
+        vars = list(puntos[clasificacion].unique())
+        if None in vars:
+            vars.remove(None)
+    # TODO: ¿qué pasa cuando ya teníamos variables?
+    if tipo_var == 'uso':
+        u = UsoDeSuelo(soporte, vars_uso=vars, vars_mc=self.vars_mc)
+    else:
+        u = UsoDeSuelo(soporte, vars_mc=vars, vars_uso=self.vars_uso)
+
+    return u    
+
+
+# %% ../nbs/api/01_usodesuelo.ipynb 113
+@patch
+def agrega_lineas(self:UsoDeSuelo,
+                  lineas:gpd.GeoDataFrame, # La capa de líneas a agregar
+                  campo: str='longitud', # Nombre del campo en el que se guarda el resultado
+                  tipo_var:str='uso' # uso/mc ¿qué tipo de variable estamos agregando
+    ) -> UsoDeSuelo:
+    soporte = self.soporte.copy()
+    soporte = soporte.agrega_lineas(lineas, campo=campo)
+    if tipo_var == 'uso':
+        vars_uso = self.vars_uso
+        vars_uso.append(campo)
+        u = UsoDeSuelo(soporte, vars_uso=vars_uso, vars_mc=self.vars_mc)
+    else:
+        vars_mc = self.vars_mc
+        vars_mc.append(campo)
+        u = UsoDeSuelo(soporte, vars_mc=vars_mc, vars_uso=self.vars_uso)
+    return u
+
+# %% ../nbs/api/01_usodesuelo.ipynb 117
+@patch
+def agrega_manzanas(self:UsoDeSuelo,
+                    manzanas:gpd.GeoDataFrame, # Las manzanas (`descarga_manzanas_ejempolo`).
+                    variables:dict, # Diccionario de las variables que querems agregar y el método para agregarlas (p, ej. {'OCUPVIVPAR':'sum'})                    
+                    tipo_var:str='uso' # uso/mc ¿qué tipo de variable estamos agregando
+    ) -> UsoDeSuelo:
+    soporte = self.soporte.copy()
+    soporte = soporte.agrega_manzanas(manzanas, variables)
+    print(soporte.datos.columns)
+    if tipo_var == 'uso':
+        vars_uso = self.vars_uso + list(variables.keys())
+        print(vars_uso)
+        u = UsoDeSuelo(soporte, vars_uso=vars_uso, vars_mc=self.vars_mc)
+    else:
+        vars_mc = self.vars_mc + list(variables.keys())
+        u = UsoDeSuelo(soporte, vars_mc=vars_mc, vars_uso=self.vars_uso)
+    return u
+

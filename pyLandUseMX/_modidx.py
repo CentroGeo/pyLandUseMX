@@ -81,4 +81,12 @@ d = { 'settings': { 'branch': 'master',
                                         'pyLandUseMX.usodesuelo.UsoDeSuelo': ( 'api/usodesuelo.html#usodesuelo',
                                                                                'pyLandUseMX/usodesuelo.py'),
                                         'pyLandUseMX.usodesuelo.UsoDeSuelo.__init__': ( 'api/usodesuelo.html#usodesuelo.__init__',
-                                                                                        'pyLandUseMX/usodesuelo.py')}}}
+                                                                                        'pyLandUseMX/usodesuelo.py'),
+                                        'pyLandUseMX.usodesuelo.UsoDeSuelo.agrega_lineas': ( 'api/usodesuelo.html#usodesuelo.agrega_lineas',
+                                                                                             'pyLandUseMX/usodesuelo.py'),
+                                        'pyLandUseMX.usodesuelo.UsoDeSuelo.agrega_manzanas': ( 'api/usodesuelo.html#usodesuelo.agrega_manzanas',
+                                                                                               'pyLandUseMX/usodesuelo.py'),
+                                        'pyLandUseMX.usodesuelo.UsoDeSuelo.agrega_puntos': ( 'api/usodesuelo.html#usodesuelo.agrega_puntos',
+                                                                                             'pyLandUseMX/usodesuelo.py'),
+                                        'pyLandUseMX.usodesuelo.UsoDeSuelo.copy': ( 'api/usodesuelo.html#usodesuelo.copy',
+                                                                                    'pyLandUseMX/usodesuelo.py')}}}
