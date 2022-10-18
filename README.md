@@ -56,7 +56,7 @@ pip install git+https://github.com/CentroGeo/pyLandUseMX
 ## Estructura
 
 La librería está organizada en torno a dos conceptos básicos:
-[`Cobertura`](https://CentroGeo.github.io/pyLandUseMX/api/coberturas.html#cobertura)
+[`Cobertura`](https://CentroGeo.github.io/pyLandUseMX/api/usodesuelo.html#cobertura)
 y `UsoDeSuelo`. Las `Coberturas` son formas de *cubrir* un área de
 estudio (una zona metropolitana, por ejemplo) utilizando mallas
 regulares (cuadrados o hexágonos) o polígonos de forma arbitraria

@@ -12,7 +12,7 @@ from mlxtend.frequent_patterns import apriori
 from mlxtend.frequent_patterns import association_rules
 from .descargas import *
 from .denue import *
-from .coberturas import *
+from .usodesuelo import *
 
 
 # %% ../nbs/api/03_analisis.ipynb 6
