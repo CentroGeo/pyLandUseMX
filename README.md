@@ -56,18 +56,22 @@ pip install git+https://github.com/CentroGeo/pyLandUseMX
 ## Estructura
 
 La librería está organizada en torno a dos conceptos básicos:
-[`Cobertura`](https://CentroGeo.github.io/pyLandUseMX/api/usodesuelo.html#cobertura)
-y `UsoDeSuelo`. Las `Coberturas` son formas de *cubrir* un área de
-estudio (una zona metropolitana, por ejemplo) utilizando mallas
-regulares (cuadrados o hexágonos) o polígonos de forma arbitraria
-(colonias o AGEBS, por ejemplo). Estas coberturas definen la forma en la
-que vamos a agregar variables para estudiar el uso de suelo y proveen
-los métodos para estas agregaciones. El `UsoDeSuelo` integra una
-`cobertura` y una definición de las variables en torno a categorías
-definidas por el usuario, a partir de esta integración, la clase
-`UsoDeSuelo` provee diferentes herramientas para construir diferentes
-índices y variables a partir de los datos integrados en las coberturas.
-El módulo análisis provee métodos para analizar el uso de suelo.
+`Cobertura` y
+[`UsoDeSuelo`](https://CentroGeo.github.io/pyLandUseMX/api/usodesuelo.html#usodesuelo).
+Las `Coberturas` son formas de *cubrir* un área de estudio (una zona
+metropolitana, por ejemplo) utilizando mallas regulares (cuadrados o
+hexágonos) o polígonos de forma arbitraria (colonias o AGEBS, por
+ejemplo). Estas coberturas definen la forma en la que vamos a agregar
+variables para estudiar el uso de suelo y proveen los métodos para estas
+agregaciones. El
+[`UsoDeSuelo`](https://CentroGeo.github.io/pyLandUseMX/api/usodesuelo.html#usodesuelo)
+integra una `cobertura` y una definición de las variables en torno a
+categorías definidas por el usuario, a partir de esta integración, la
+clase
+[`UsoDeSuelo`](https://CentroGeo.github.io/pyLandUseMX/api/usodesuelo.html#usodesuelo)
+provee diferentes herramientas para construir diferentes índices y
+variables a partir de los datos integrados en las coberturas. El módulo
+análisis provee métodos para analizar el uso de suelo.
 
 Además de estos elemementos, la librería también contiene un módulo de
 `descargas` que permite descargar datos ya procesados que sirven como
@@ -112,12 +116,20 @@ correcciones topológicas.
 Tenemos una base del DENUE integrada para el año 2022 en la Ciudad de
 México.
 
-### Coberturas
+### Uso de Suelo
+
+El módulo `usodesuelo` provee métodos para extraer variables de Uso de
+Suelo y medio construido en diferentes soportes espaciales. Además nos
+permite calcular algunos índices básicos como mezclas e intensidad.
+
+#### Soporte
 
 Regularmente para trabajos sobre análisis de uso de suelo y cobertura
 urbana se parte de la integración de la información en algún soporte
-espacial. El módulo `coberturas` provee métodos para estructurar las
-fuentes de datos en dos grandes tipos de soporte:
+espacial. La clase
+[`Soporte`](https://CentroGeo.github.io/pyLandUseMX/api/usodesuelo.html#soporte)
+provee métodos para estructurar las fuentes de datos en dos grandes
+tipos de soporte:
 
 - Mallas regulares
 - Polígonos arbitrarios
@@ -151,7 +163,7 @@ data-layout-align="center">
 
 </div>
 
-Las coberturas nos permiten agregar diferentes tipos de variables en
+Los soportes nos permiten agregar diferentes tipos de variables en
 mallas regulares (por ejemplo, a la izquierda la red de calles agregada
 en un raster) o en polígonos arbitrarios (a la derecha muestra de
 comercios agregados en colonias)
@@ -187,6 +199,13 @@ colonias</figcaption>
 </table>
 
 </div>
+
+#### UsoDeSuelo
+
+La clase
+[`UsoDeSuelo`](https://CentroGeo.github.io/pyLandUseMX/api/usodesuelo.html#usodesuelo)
+parte de un soporte espacial y nos permite calcular algunos indicadores
+sobre el uso de suelo y el medio construido.
 
 ### DENUE
 
