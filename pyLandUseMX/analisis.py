@@ -20,7 +20,7 @@ class Canasta (object):
     """ Clase para guardar los elementos básicos del análisis de afinidad."""
     def __init__(self,
                  puntos:gpd.GeoDataFrame, # Los puntos que representan las actividades o items
-                 cobertura: Cobertura, # Los polígonos en los que se agregan los items  
+                 cobertura: Soporte, # Los polígonos en los que se agregan los items  
             ) -> None:
         self.puntos = puntos
         self.malla = cobertura
