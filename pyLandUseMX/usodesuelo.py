@@ -554,7 +554,7 @@ def calcula_mezclas(self:UsoDeSuelo)-> UsoDeSuelo:
             s = ((soporte.datos[c] / soporte.datos['intensidad'])  * np.log(soporte.datos[c] / soporte.datos['intensidad']))
         terms.append(s)
     terms = pd.concat(terms, axis=1)
-    terms = terms.sum(axis=1) / len(self.vars_uso)
+    terms = -1.0*(terms.sum(axis=1) / len(self.vars_uso))
     soporte.datos['entropia'] = terms
     vars_uso = self.vars_uso + ['intensidad', 'entropia']
     u = UsoDeSuelo(soporte, vars_uso=vars_uso, vars_mc=self.vars_mc)
