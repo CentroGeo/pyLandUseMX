@@ -22,6 +22,7 @@ import random
 from typing import Union
 from typing import List
 from pathlib import Path
+import warnings
 
 # %% ../nbs/api/01_usodesuelo.ipynb 6
 class Soporte(ABC):
@@ -440,13 +441,15 @@ class UsoDeSuelo(object):
     def __init__(self,
                  soporte: Soporte, # El soporte espacial de la capa
                  vars_uso: Union[List[int], None]=None,# Nombres de las columnas del soporte con variables de uso de suelo
-                 vars_mc: Union[List[int], None]=None,# Nombres de las columnas del soporte con variables del medio construido
+                 vars_mc: Union[List[int], None]=None# Nombres de las columnas del soporte con variables del medio construido
         ):
+        self.indices = [] #Aquí vamos a guardar los índices que vayamos calculando
         if type(soporte) == Malla:
             columnas = ['grid_id', 'geometry']
         else:
             columnas = [soporte.id_col, 'geometry'] if soporte.nom_col is None else [soporte.id_col, soporte.nom_col, 'geometry']
 
+        columnas = columnas + self.indices
         if vars_uso is not None:
             try:
                 assert set(vars_uso).intersection(soporte.datos.columns) == set(vars_uso)
@@ -538,3 +541,22 @@ def agrega_manzanas(self:UsoDeSuelo,
         u = UsoDeSuelo(soporte, vars_mc=vars_mc, vars_uso=self.vars_uso)
     return u
 
+
+# %% ../nbs/api/01_usodesuelo.ipynb 133
+@patch
+def calcula_mezclas(self:UsoDeSuelo)-> UsoDeSuelo:
+    soporte = self.soporte.copy()
+    soporte.datos['intensidad'] = soporte.datos[self.vars_uso].sum(axis=1)
+    terms = []
+    for c in self.vars_uso:
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            s = ((soporte.datos[c] / soporte.datos['intensidad'])  * np.log(soporte.datos[c] / soporte.datos['intensidad']))
+        terms.append(s)
+    terms = pd.concat(terms, axis=1)
+    terms = terms.sum(axis=1) / len(self.vars_uso)
+    soporte.datos['entropia'] = terms
+    vars_uso = self.vars_uso + ['intensidad', 'entropia']
+    u = UsoDeSuelo(soporte, vars_uso=vars_uso, vars_mc=self.vars_mc)
+    u.indices = ['entropia', 'intensidad']
+    return u

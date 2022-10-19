@@ -88,5 +88,7 @@ d = { 'settings': { 'branch': 'master',
                                                                                                'pyLandUseMX/usodesuelo.py'),
                                         'pyLandUseMX.usodesuelo.UsoDeSuelo.agrega_puntos': ( 'api/usodesuelo.html#usodesuelo.agrega_puntos',
                                                                                              'pyLandUseMX/usodesuelo.py'),
+                                        'pyLandUseMX.usodesuelo.UsoDeSuelo.calcula_mezclas': ( 'api/usodesuelo.html#usodesuelo.calcula_mezclas',
+                                                                                               'pyLandUseMX/usodesuelo.py'),
                                         'pyLandUseMX.usodesuelo.UsoDeSuelo.copy': ( 'api/usodesuelo.html#usodesuelo.copy',
                                                                                     'pyLandUseMX/usodesuelo.py')}}}
