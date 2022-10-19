@@ -368,25 +368,9 @@ def agrega_puntos(self:Poligonos,
 
     if clasificacion is not None:
         agregado = agregado.pivot(index=self.id_col, columns=clasificacion, values=c)
-        # agregado = (puntos
-        #             .sjoin(self.datos)
-        #             .groupby(self.id_col)
-        #             .size()
-        #             .reset_index()
-        #             .rename({0:campo}, axis=1)
-        #             .merge(self.datos, on=self.id_col, how='right').fillna(0))
     else:
         agregado = agregado.rename({c:campo}, axis=1)
 
-    # else:
-    #     agregado = (puntos
-    #                 .sjoin(self.datos)
-    #                 .groupby([clasificacion, self.id_col])
-    #                 .size()
-    #                 .reset_index()
-    #                 .pivot(index=self.id_col, columns=clasificacion, values=0)                    
-    #                 .merge(self.datos, on=self.id_col, how='right')
-    #                 .fillna(0))
     agregado = agregado.merge(self.datos, on=self.id_col, how='right').fillna(0)
     agregado = (gpd.GeoDataFrame(agregado)
                 .set_crs(self.crs))
@@ -491,7 +475,7 @@ class UsoDeSuelo(object):
                        vars_mc=self.vars_mc)
         return u
 
-# %% ../nbs/api/01_usodesuelo.ipynb 103
+# %% ../nbs/api/01_usodesuelo.ipynb 107
 @patch
 def agrega_puntos(self:UsoDeSuelo,
                   puntos:gpd.GeoDataFrame, # La malla en la que se va a agregar
@@ -518,7 +502,7 @@ def agrega_puntos(self:UsoDeSuelo,
     return u    
 
 
-# %% ../nbs/api/01_usodesuelo.ipynb 113
+# %% ../nbs/api/01_usodesuelo.ipynb 115
 @patch
 def agrega_lineas(self:UsoDeSuelo,
                   lineas:gpd.GeoDataFrame, # La capa de líneas a agregar
@@ -537,7 +521,7 @@ def agrega_lineas(self:UsoDeSuelo,
         u = UsoDeSuelo(soporte, vars_mc=vars_mc, vars_uso=self.vars_uso)
     return u
 
-# %% ../nbs/api/01_usodesuelo.ipynb 117
+# %% ../nbs/api/01_usodesuelo.ipynb 123
 @patch
 def agrega_manzanas(self:UsoDeSuelo,
                     manzanas:gpd.GeoDataFrame, # Las manzanas (`descarga_manzanas_ejempolo`).
@@ -546,10 +530,8 @@ def agrega_manzanas(self:UsoDeSuelo,
     ) -> UsoDeSuelo:
     soporte = self.soporte.copy()
     soporte = soporte.agrega_manzanas(manzanas, variables)
-    print(soporte.datos.columns)
     if tipo_var == 'uso':
         vars_uso = self.vars_uso + list(variables.keys())
-        print(vars_uso)
         u = UsoDeSuelo(soporte, vars_uso=vars_uso, vars_mc=self.vars_mc)
     else:
         vars_mc = self.vars_mc + list(variables.keys())
