@@ -9,7 +9,7 @@ website:
       - section: API
         contents:
           - api/00_descargas.ipynb
-          - api/01_coberturas.ipynb
+          - api/01_usodesuelo.ipynb
           - api/02_denue.ipynb
           - api/03_analisis.ipynb
       - section: Fuentes
