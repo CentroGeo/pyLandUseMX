@@ -1,0 +1,25 @@
+[
+  {
+    "listing": "/api/index.html",
+    "items": [
+      "/api/analisis.html",
+      "/api/denue.html",
+      "/api/descargas.html",
+      "/api/usodesuelo.html"
+    ]
+  },
+  {
+    "listing": "/fuentes/index.html",
+    "items": [
+      "/fuentes/censo.html"
+    ]
+  },
+  {
+    "listing": "/tutoriales/index.html",
+    "items": [
+      "/tutoriales/vialidades.html",
+      "/tutoriales/extraccion_actividades.html",
+      "/tutoriales/zona_metro.html"
+    ]
+  }
+]

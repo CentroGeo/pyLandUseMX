@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.251">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>pyLandUseMX - Datos del Censo</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+<meta property="og:title" content="pyLandUseMX - Datos del Censo">
+<meta property="og:description" content="Aquí documentamos el procedimiento para obtener los datos a nivel manzana que se utilizan como ejemplo en Soporte">
+<meta property="og:site-name" content="pyLandUseMX">
+<meta name="twitter:title" content="pyLandUseMX - Datos del Censo">
+<meta name="twitter:description" content="Aquí documentamos el procedimiento para obtener los datos a nivel manzana que se utilizan como ejemplo en Soporte">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar docked nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a href="https://www.centrogeo.org.mx/" class="navbar-brand navbar-brand-logo">
+    <img src="../logo_centrogeo.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">pyLandUseMX</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/CentroGeo/pyLandUseMX"><i class="bi bi-github" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/plablo09"><i class="bi bi-twitter" role="img" aria-label="plablo09 Twitter">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Datos del Censo</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">pyLandUseMX</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">Tutoriales</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../tutoriales/extraccion_actividades.html" class="sidebar-item-text sidebar-link">Extracción de actividades del DENUE</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../tutoriales/vialidades.html" class="sidebar-item-text sidebar-link">Agregación de vialidades</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">API</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/descargas.html" class="sidebar-item-text sidebar-link">Descargas</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/usodesuelo.html" class="sidebar-item-text sidebar-link">Uso de Suelo</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/denue.html" class="sidebar-item-text sidebar-link">Denue</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/analisis.html" class="sidebar-item-text sidebar-link">Análisis</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Fuentes</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fuentes/censo.html" class="sidebar-item-text sidebar-link active">Datos del Censo</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#datos-de-ejemplo" id="toc-datos-de-ejemplo" class="nav-link active" data-scroll-target="#datos-de-ejemplo">Datos de ejemplo</a></li>
+  <li><a href="#manzanas-zmvm" id="toc-manzanas-zmvm" class="nav-link" data-scroll-target="#manzanas-zmvm">Manzanas ZMVM</a>
+  <ul class="collapse">
+  <li><a href="#integración-de-manzanas" id="toc-integración-de-manzanas" class="nav-link" data-scroll-target="#integración-de-manzanas">Integración de manzanas</a></li>
+  <li><a href="#datos-del-censo" id="toc-datos-del-censo" class="nav-link" data-scroll-target="#datos-del-censo">Datos del censo</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/CentroGeo/pyLandUseMX/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Datos del Censo</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyLandUseMX.descargas <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="datos-de-ejemplo" class="level2">
+<h2 class="anchored" data-anchor-id="datos-de-ejemplo">Datos de ejemplo</h2>
+<p>Aquí documentamos el procedimiento para obtener los datos a nivel manzana que se utilizan como ejemplo en <a href="https://CentroGeo.github.io/pyLandUseMX/api/usodesuelo.html#soporte"><code>Soporte</code></a></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Descargamos la geometría de las manzanas</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>Path(DOWNLOADS_PATH).mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>fname <span class="op">=</span> <span class="st">'manzanas.gpkg'</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>absp <span class="op">=</span> os.path.abspath(os.path.join(DOWNLOADS_PATH, fname))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> os.path.exists(absp):</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"El archivo ya está descargado"</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    url <span class="op">=</span> <span class="st">'https://www.dropbox.com/s/bzsj7wl4izzdbjh/manzanas_identificadores.gpkg?dl=1'</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> requests.get(url, allow_redirects<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">open</span>(absp, <span class="st">'wb'</span>).write(r.content)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Leemos la geometría de las manzanas de CDMX</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>manzanas <span class="op">=</span> gpd.read_file(absp)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Descargamos los daots del censo</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>Path(DOWNLOADS_PATH).mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>fname <span class="op">=</span> <span class="st">'censo_manzanas.zip'</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>absp <span class="op">=</span> os.path.abspath(os.path.join(DOWNLOADS_PATH, fname))</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> os.path.exists(absp):</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"El archivo ya está descargado"</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    url <span class="op">=</span> <span class="st">'https://www.dropbox.com/s/hj6d2t9vtbn5qz4/censo_manzanas.zip?dl=1'</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> requests.get(url, allow_redirects<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">open</span>(absp, <span class="st">'wb'</span>).write(r.content)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Leemos los datos del censo (sólo unas columnas para elejemplo)</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>censo <span class="op">=</span> pd.read_csv(absp, </span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>                    dtype<span class="op">=</span>{<span class="st">'CVEGEO'</span>:<span class="bu">str</span>, <span class="st">'colonia_cve'</span>: <span class="st">'Int64'</span>}, </span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>                    usecols<span class="op">=</span>[<span class="st">'CVEGEO'</span>, <span class="st">'OCUPVIVPAR'</span>, <span class="st">'VIVPAR_HAB'</span>])</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Unimos </span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>manzanas <span class="op">=</span> manzanas.merge(censo, on<span class="op">=</span><span class="st">'CVEGEO'</span>).fillna(<span class="dv">0</span>) <span class="co"># Llenamos con 0 los faltantes</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>manzanas <span class="op">=</span> manzanas.drop(columns<span class="op">=</span>[<span class="st">'colonia_cve'</span>, <span class="st">'cuadrante_id'</span>, <span class="st">'colonia_nombre'</span>, <span class="st">'AMBITO'</span>, <span class="st">'TIPOMZA'</span>])</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>manzanas.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>El archivo ya está descargado</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>CVEGEO</th>
+      <th>geometry</th>
+      <th>VIVPAR_HAB</th>
+      <th>OCUPVIVPAR</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0901000010898031</td>
+      <td>POLYGON ((2790204.135 820779.247, 2790125.593 ...</td>
+      <td>22.0</td>
+      <td>93.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0901000012269024</td>
+      <td>POLYGON ((2791387.916 821465.156, 2791376.215 ...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0901000011472068</td>
+      <td>POLYGON ((2788494.355 822775.106, 2788478.422 ...</td>
+      <td>33.0</td>
+      <td>124.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0901000011824024</td>
+      <td>POLYGON ((2790870.494 819456.298, 2790862.256 ...</td>
+      <td>95.0</td>
+      <td>340.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0901000012377004</td>
+      <td>POLYGON ((2792111.138 821977.886, 2792115.437 ...</td>
+      <td>23.0</td>
+      <td>82.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Lo guardamos</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>manzanas.to_file(<span class="st">"../../datos/descargas/manzanas_ejemplo.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="manzanas-zmvm" class="level2">
+<h2 class="anchored" data-anchor-id="manzanas-zmvm">Manzanas ZMVM</h2>
+<p>Para mostrar cómo integrar datos para una Zona Metropolitana completa, vamos a hacer una integración del Censo a nivel manzana para la Zona Metropolitana del Valle de México. Para esto vamos a necesitar tres insumos básicos: el marco geoestadístico (con los datos de las geometrías de las manzanas), los datos del censo a nivel AGEB urbana y la delimitación de las zonas metropolitanas de CONAPO.</p>
+<p>Todos los datos se pueden descargar del sitio de INEGI, para los polígonos de la delimitración de zonas urbanas, la librería provee una función para su descarga.</p>
+<p>De aquí en adelante vamos a suponer que tenemos los archivos descargados en <code>DOWNLOADS_PATH</code> y que extrajimos del marco censal los datos de manzanas para los estados que nos interesan (CDMX, Hidalgo y Estado de México).</p>
+<section id="integración-de-manzanas" class="level3">
+<h3 class="anchored" data-anchor-id="integración-de-manzanas">Integración de manzanas</h3>
+<p>Aquí vamos a leer las gemetrías de manzanas de cada estado, unirlas en un sólo DataFrame y seleccionar las que intersecten al polígono de la ZMVM.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Leemos los datos (no queremos todas las columnas)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>absp <span class="op">=</span> os.path.abspath(os.path.join(DOWNLOADS_PATH, <span class="st">'manzanas_cdmx.zip'</span>))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>manzanas_cdmx <span class="op">=</span> (gpd.read_file(absp)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                .drop(columns<span class="op">=</span>[<span class="st">'CVE_ENT'</span>, <span class="st">'CVE_MUN'</span>, <span class="st">'CVE_LOC'</span>, <span class="st">'CVE_AGEB'</span>, <span class="st">'CVE_MZA'</span>]))</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>absp <span class="op">=</span> os.path.abspath(os.path.join(DOWNLOADS_PATH, <span class="st">'manzanas_edomex.zip'</span>))</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>manzanas_edomex <span class="op">=</span> (gpd.read_file(absp)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                .drop(columns<span class="op">=</span>[<span class="st">'CVE_ENT'</span>, <span class="st">'CVE_MUN'</span>, <span class="st">'CVE_LOC'</span>, <span class="st">'CVE_AGEB'</span>, <span class="st">'CVE_MZA'</span>]))</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>absp <span class="op">=</span> os.path.abspath(os.path.join(DOWNLOADS_PATH, <span class="st">'manzanas_hidalgo.zip'</span>))</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>manzanas_hgo <span class="op">=</span> (gpd.read_file(absp)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>                .drop(columns<span class="op">=</span>[<span class="st">'CVE_ENT'</span>, <span class="st">'CVE_MUN'</span>, <span class="st">'CVE_LOC'</span>, <span class="st">'CVE_AGEB'</span>, <span class="st">'CVE_MZA'</span>]))</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Concatenamos en un sólo gdf</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>manzanas <span class="op">=</span> pd.concat([manzanas_cdmx, manzanas_edomex, manzanas_hgo])</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Descargamos los polígonos de las ciudades, seleccionamos la zmvm y seleccionamos las manzanas que intersectan al polígono.</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>pth <span class="op">=</span> descarga_poligonos_ciudades()</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>zmvm <span class="op">=</span> gpd.read_file(pth)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>zmvm <span class="op">=</span> zmvm.loc[zmvm.CVE_SUN <span class="op">==</span> <span class="st">'13'</span>].to_crs(manzanas.crs)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>manzanas <span class="op">=</span> (manzanas</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>            .sjoin(zmvm)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>            .drop(columns<span class="op">=</span>[<span class="st">'index_right'</span>, <span class="st">'OBJECTID'</span>, <span class="st">'Shape_Leng'</span>, <span class="st">'NOM_CIUDAD'</span>, <span class="st">'Shape_Le_1'</span>, <span class="st">'Shape_Area'</span>, <span class="st">'CVE_SUN'</span>, <span class="st">'SUN'</span>]))</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>manzanas.plot()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>El archivo ya está descargado</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>&lt;AxesSubplot: &gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="censo_files/figure-html/cell-5-output-3.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="datos-del-censo" class="level3">
+<h3 class="anchored" data-anchor-id="datos-del-censo">Datos del censo</h3>
+<p>Ya tenemos integradas las manzanas, ahoratenemos que integrar los datos del Censo. Para el Censo de 2020 INEGI publica un csv con los resultados por AGEB y manzana urbana combinados, entonces tenemos que, además de hacer la concatenación de las bases, seleccionar únicamente los resultados a nivel manzana.</p>
+<p>Entonces, una vez más, suponiendo que tenemos los datos guardados en la carpeta <code>DOWNLOADS_PATH</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Leemos el archivo</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>pth <span class="op">=</span> os.path.abspath(os.path.join(DOWNLOADS_PATH, <span class="st">'conjunto_de_datos_ageb_urbana_09_cpv2020.zip'</span>))</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>censo_cdmx <span class="op">=</span> pd.read_csv(pth, dtype<span class="op">=</span>{<span class="st">"ENTIDAD"</span>:<span class="bu">str</span>, <span class="st">"MUN"</span>: <span class="bu">str</span>, <span class="st">"LOC"</span>:<span class="bu">str</span>, <span class="st">"AGEB"</span>:<span class="bu">str</span>, <span class="st">"MZA"</span>: <span class="bu">str</span>})</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Nos quedamos sólo con las filas que tienen datos de manzanas (no localidad, agebs, etc)</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>censo_cdmx <span class="op">=</span> censo_cdmx.loc[censo_cdmx[<span class="st">'MZA'</span>] <span class="op">!=</span> <span class="st">'000'</span>]</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Construimos la cvegeo de las manzanas</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>censo_cdmx[<span class="st">'CVEGEO'</span>] <span class="op">=</span> censo_cdmx[<span class="st">'ENTIDAD'</span>] <span class="op">+</span> censo_cdmx[<span class="st">'MUN'</span>] <span class="op">+</span> censo_cdmx[<span class="st">'LOC'</span>] <span class="op">+</span> censo_cdmx[<span class="st">'AGEB'</span>] <span class="op">+</span> censo_cdmx[<span class="st">'MZA'</span>]</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>censo_cdmx.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>ENTIDAD</th>
+      <th>NOM_ENT</th>
+      <th>MUN</th>
+      <th>NOM_MUN</th>
+      <th>LOC</th>
+      <th>NOM_LOC</th>
+      <th>AGEB</th>
+      <th>MZA</th>
+      <th>POBTOT</th>
+      <th>POBFEM</th>
+      <th>...</th>
+      <th>VPH_CEL</th>
+      <th>VPH_INTER</th>
+      <th>VPH_STVP</th>
+      <th>VPH_SPMVPI</th>
+      <th>VPH_CVJ</th>
+      <th>VPH_SINRTV</th>
+      <th>VPH_SINLTC</th>
+      <th>VPH_SINCINT</th>
+      <th>VPH_SINTIC</th>
+      <th>CVEGEO</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>4</th>
+      <td>09</td>
+      <td>Ciudad de México</td>
+      <td>002</td>
+      <td>Azcapotzalco</td>
+      <td>0001</td>
+      <td>Azcapotzalco</td>
+      <td>0010</td>
+      <td>001</td>
+      <td>159</td>
+      <td>86</td>
+      <td>...</td>
+      <td>42</td>
+      <td>39</td>
+      <td>18</td>
+      <td>13</td>
+      <td>6</td>
+      <td>*</td>
+      <td>0</td>
+      <td>9</td>
+      <td>0</td>
+      <td>0900200010010001</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>09</td>
+      <td>Ciudad de México</td>
+      <td>002</td>
+      <td>Azcapotzalco</td>
+      <td>0001</td>
+      <td>Azcapotzalco</td>
+      <td>0010</td>
+      <td>002</td>
+      <td>145</td>
+      <td>80</td>
+      <td>...</td>
+      <td>38</td>
+      <td>32</td>
+      <td>14</td>
+      <td>12</td>
+      <td>5</td>
+      <td>0</td>
+      <td>0</td>
+      <td>9</td>
+      <td>0</td>
+      <td>0900200010010002</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>09</td>
+      <td>Ciudad de México</td>
+      <td>002</td>
+      <td>Azcapotzalco</td>
+      <td>0001</td>
+      <td>Azcapotzalco</td>
+      <td>0010</td>
+      <td>003</td>
+      <td>124</td>
+      <td>64</td>
+      <td>...</td>
+      <td>28</td>
+      <td>25</td>
+      <td>11</td>
+      <td>15</td>
+      <td>7</td>
+      <td>0</td>
+      <td>*</td>
+      <td>6</td>
+      <td>0</td>
+      <td>0900200010010003</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>09</td>
+      <td>Ciudad de México</td>
+      <td>002</td>
+      <td>Azcapotzalco</td>
+      <td>0001</td>
+      <td>Azcapotzalco</td>
+      <td>0010</td>
+      <td>004</td>
+      <td>158</td>
+      <td>83</td>
+      <td>...</td>
+      <td>38</td>
+      <td>34</td>
+      <td>14</td>
+      <td>4</td>
+      <td>7</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>0</td>
+      <td>0900200010010004</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>09</td>
+      <td>Ciudad de México</td>
+      <td>002</td>
+      <td>Azcapotzalco</td>
+      <td>0001</td>
+      <td>Azcapotzalco</td>
+      <td>0010</td>
+      <td>005</td>
+      <td>154</td>
+      <td>86</td>
+      <td>...</td>
+      <td>42</td>
+      <td>38</td>
+      <td>12</td>
+      <td>5</td>
+      <td>6</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>0</td>
+      <td>0900200010010005</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 231 columns</p>
+</div>
+</div>
+</div>
+<p>Ahora necesitamos corregir los valores <em>nodata</em> y usar los tipos de datos adecuados. Para eso vamos a necesitar el diccionario de datos del Censo, que también se puede descargar de su siio</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fname <span class="op">=</span> <span class="st">'diccionario_datos_ageb_urbana_09_cpv2020.csv'</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>absp <span class="op">=</span> os.path.abspath(os.path.join(DOWNLOADS_PATH, fname))</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>dicionario <span class="op">=</span> pd.read_csv(absp, skiprows<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>diccionario <span class="op">=</span> (dicionario</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>                .drop(<span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">8</span>))</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>                .drop(columns<span class="op">=</span><span class="st">'Núm.'</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>                .reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>                .rename({<span class="st">'Mnemónico'</span>:<span class="st">'Nombre del Campo'</span>}, axis<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>diccionario</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Indicador</th>
+      <th>Descripción</th>
+      <th>Nombre del Campo</th>
+      <th>Rangos</th>
+      <th>Longitud</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Población total</td>
+      <td>Total de personas que residen habitualmente en...</td>
+      <td>POBTOT</td>
+      <td>0...999999999</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Población femenina</td>
+      <td>Total de mujeres que residen habitualmente en ...</td>
+      <td>POBFEM</td>
+      <td>0...999999999</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Población masculina</td>
+      <td>Total de hombres que residen habitualmente en ...</td>
+      <td>POBMAS</td>
+      <td>0...999999999</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Población de 0 a 2 años</td>
+      <td>Personas de 0 a 2 años de edad.</td>
+      <td>P_0A2</td>
+      <td>0…999999999</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Población femenina de 0 a 2 años</td>
+      <td>Mujeres de 0 a 2 años de edad.</td>
+      <td>P_0A2_F</td>
+      <td>0.,.999999999</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>217</th>
+      <td>Viviendas particulares habitadas que disponen ...</td>
+      <td>Viviendas particulares habitadas que tienen co...</td>
+      <td>VPH_CVJ</td>
+      <td>0…999999999</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>218</th>
+      <td>Viviendas particulares habitadas sin radio ni ...</td>
+      <td>Viviendas particulares habitadas que no cuenta...</td>
+      <td>VPH_SINRTV</td>
+      <td>0…999999999</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>219</th>
+      <td>Viviendas particulares habitadas sin línea tel...</td>
+      <td>Viviendas particulares habitadas que no cuenta...</td>
+      <td>VPH_SINLTC</td>
+      <td>0…999999999</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>220</th>
+      <td>Viviendas particulares habitadas sin computado...</td>
+      <td>Viviendas particulares habitadas que no cuenta...</td>
+      <td>VPH_SINCINT</td>
+      <td>0…999999999</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>221</th>
+      <td>Viviendas particulares habitadas sin tecnologí...</td>
+      <td>Viviendas particulares habitadas que no cuenta...</td>
+      <td>VPH_SINTIC</td>
+      <td>0…999999999</td>
+      <td>9</td>
+    </tr>
+  </tbody>
+</table>
+<p>222 rows × 5 columns</p>
+</div>
+</div>
+</div>
+<p>Ya con el diccionario podemos arreglar la base</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Codificamos los Nan</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>censo_cdmx <span class="op">=</span> (censo_cdmx</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>              .replace(<span class="st">'999999999'</span>, np.nan)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>              .replace(<span class="st">'99999999'</span>, np.nan)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>              .replace(<span class="st">'*'</span>, np.nan)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>              .replace(<span class="st">'N/D'</span>, np.nan)) </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Cambiamos los tipos de datos</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>campos_datos <span class="op">=</span> diccionario[<span class="st">'Nombre del Campo'</span>].unique()</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>censo_cdmx[campos_datos] <span class="op">=</span> censo_cdmx[campos_datos].astype(<span class="st">'float'</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>censo_cdmx.dtypes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>ENTIDAD         object
+NOM_ENT         object
+MUN             object
+NOM_MUN         object
+LOC             object
+                ...   
+VPH_SINRTV     float64
+VPH_SINLTC     float64
+VPH_SINCINT    float64
+VPH_SINTIC     float64
+CVEGEO          object
+Length: 231, dtype: object</code></pre>
+</div>
+</div>
+<p>Hacemos lo mismo para Edomex e Hidalgo</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Leemos el archivo</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>pth <span class="op">=</span> os.path.abspath(os.path.join(DOWNLOADS_PATH, <span class="st">'conjunto_de_datos_ageb_urbana_13_cpv2020.zip'</span>))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>censo_hgo <span class="op">=</span> pd.read_csv(pth, dtype<span class="op">=</span>{<span class="st">"ENTIDAD"</span>:<span class="bu">str</span>, <span class="st">"MUN"</span>: <span class="bu">str</span>, <span class="st">"LOC"</span>:<span class="bu">str</span>, <span class="st">"AGEB"</span>:<span class="bu">str</span>, <span class="st">"MZA"</span>: <span class="bu">str</span>})</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Nos quedamos sólo con las filas que tienen datos de manzanas (no localidad, agebs, etc)</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>censo_hgo <span class="op">=</span> censo_hgo.loc[censo_hgo[<span class="st">'MZA'</span>] <span class="op">!=</span> <span class="st">'000'</span>]</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Construimos la cvegeo de las manzanas</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>censo_hgo[<span class="st">'CVEGEO'</span>] <span class="op">=</span> censo_hgo[<span class="st">'ENTIDAD'</span>] <span class="op">+</span> censo_hgo[<span class="st">'MUN'</span>] <span class="op">+</span> censo_hgo[<span class="st">'LOC'</span>] <span class="op">+</span> censo_hgo[<span class="st">'AGEB'</span>] <span class="op">+</span> censo_hgo[<span class="st">'MZA'</span>]</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Leemos el archivo</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>pth <span class="op">=</span> os.path.abspath(os.path.join(DOWNLOADS_PATH, <span class="st">'conjunto_de_datos_ageb_urbana_15_cpv2020.zip'</span>))</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>censo_mex <span class="op">=</span> pd.read_csv(pth, dtype<span class="op">=</span>{<span class="st">"ENTIDAD"</span>:<span class="bu">str</span>, <span class="st">"MUN"</span>: <span class="bu">str</span>, <span class="st">"LOC"</span>:<span class="bu">str</span>, <span class="st">"AGEB"</span>:<span class="bu">str</span>, <span class="st">"MZA"</span>: <span class="bu">str</span>})</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Nos quedamos sólo con las filas que tienen datos de manzanas (no localidad, agebs, etc)</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>censo_mex <span class="op">=</span> censo_mex.loc[censo_mex[<span class="st">'MZA'</span>] <span class="op">!=</span> <span class="st">'000'</span>]</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Construimos la cvegeo de las manzanas</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>censo_mex[<span class="st">'CVEGEO'</span>] <span class="op">=</span> censo_mex[<span class="st">'ENTIDAD'</span>] <span class="op">+</span> censo_mex[<span class="st">'MUN'</span>] <span class="op">+</span> censo_mex[<span class="st">'LOC'</span>] <span class="op">+</span> censo_mex[<span class="st">'AGEB'</span>] <span class="op">+</span> censo_mex[<span class="st">'MZA'</span>]</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Codificamos los Nan</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>censo_hgo <span class="op">=</span> (censo_hgo</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>              .replace(<span class="st">'999999999'</span>, np.nan)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>              .replace(<span class="st">'99999999'</span>, np.nan)</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>              .replace(<span class="st">'*'</span>, np.nan)</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>              .replace(<span class="st">'N/D'</span>, np.nan)) </span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>censo_hgo[campos_datos] <span class="op">=</span> censo_hgo[campos_datos].astype(<span class="st">'float'</span>)</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>censo_mex <span class="op">=</span> (censo_mex</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>              .replace(<span class="st">'999999999'</span>, np.nan)</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>              .replace(<span class="st">'99999999'</span>, np.nan)</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>              .replace(<span class="st">'*'</span>, np.nan)</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>              .replace(<span class="st">'N/D'</span>, np.nan)) </span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>censo_mex[campos_datos] <span class="op">=</span> censo_mex[campos_datos].astype(<span class="st">'float'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Concatenamos y unimos a las geometrías que calculamos arriba</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>censo <span class="op">=</span> pd.concat([censo_cdmx, censo_hgo, censo_mex])</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>manzanas <span class="op">=</span> (manzanas</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>            .merge(censo, on<span class="op">=</span><span class="st">'CVEGEO'</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>            .drop(columns<span class="op">=</span>[<span class="st">'ENTIDAD'</span>, <span class="st">'NOM_ENT'</span>, <span class="st">'MUN'</span>, <span class="st">'NOM_MUN'</span>, <span class="st">'LOC'</span>, <span class="st">'NOM_LOC'</span>, <span class="st">'AGEB'</span>, <span class="st">'MZA'</span>]))</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>manzanas.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>CVEGEO</th>
+      <th>AMBITO</th>
+      <th>TIPOMZA</th>
+      <th>geometry</th>
+      <th>POBTOT</th>
+      <th>POBFEM</th>
+      <th>POBMAS</th>
+      <th>P_0A2</th>
+      <th>P_0A2_F</th>
+      <th>P_0A2_M</th>
+      <th>...</th>
+      <th>VPH_TELEF</th>
+      <th>VPH_CEL</th>
+      <th>VPH_INTER</th>
+      <th>VPH_STVP</th>
+      <th>VPH_SPMVPI</th>
+      <th>VPH_CVJ</th>
+      <th>VPH_SINRTV</th>
+      <th>VPH_SINLTC</th>
+      <th>VPH_SINCINT</th>
+      <th>VPH_SINTIC</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0901000010898031</td>
+      <td>Urbana</td>
+      <td>Típica</td>
+      <td>POLYGON ((2790204.135 820779.247, 2790125.593 ...</td>
+      <td>93.0</td>
+      <td>56.0</td>
+      <td>37.0</td>
+      <td>4.0</td>
+      <td>NaN</td>
+      <td>3.0</td>
+      <td>...</td>
+      <td>20.0</td>
+      <td>19.0</td>
+      <td>15.0</td>
+      <td>16.0</td>
+      <td>6.0</td>
+      <td>3.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>7.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0901000012269024</td>
+      <td>Urbana</td>
+      <td>Típica</td>
+      <td>POLYGON ((2791387.916 821465.156, 2791376.215 ...</td>
+      <td>6.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0901000011472068</td>
+      <td>Urbana</td>
+      <td>Típica</td>
+      <td>POLYGON ((2788494.355 822775.106, 2788478.422 ...</td>
+      <td>124.0</td>
+      <td>66.0</td>
+      <td>58.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>25.0</td>
+      <td>29.0</td>
+      <td>25.0</td>
+      <td>22.0</td>
+      <td>9.0</td>
+      <td>8.0</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>7.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0901000011824024</td>
+      <td>Urbana</td>
+      <td>Típica</td>
+      <td>POLYGON ((2790870.494 819456.298, 2790862.256 ...</td>
+      <td>340.0</td>
+      <td>177.0</td>
+      <td>163.0</td>
+      <td>12.0</td>
+      <td>8.0</td>
+      <td>4.0</td>
+      <td>...</td>
+      <td>54.0</td>
+      <td>90.0</td>
+      <td>69.0</td>
+      <td>56.0</td>
+      <td>29.0</td>
+      <td>14.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>25.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0901000012377004</td>
+      <td>Urbana</td>
+      <td>Típica</td>
+      <td>POLYGON ((2792111.138 821977.886, 2792115.437 ...</td>
+      <td>82.0</td>
+      <td>41.0</td>
+      <td>41.0</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>15.0</td>
+      <td>21.0</td>
+      <td>13.0</td>
+      <td>13.0</td>
+      <td>6.0</td>
+      <td>3.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>9.0</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 226 columns</p>
+</div>
+</div>
+</div>
+<p>Aquí ya tenemos todas las manzanas unidas y con datos. Ya sólo hay que exportar.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>manzanas.to_file(<span class="st">"../../datos/descargas/manzanas_datos.gpkg"</span>, layer<span class="op">=</span><span class="st">'manzanas'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

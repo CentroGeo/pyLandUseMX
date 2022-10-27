@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.251">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Funciones para utilizar datos del DENUE en estudios de Uso de Suelo.">
+
+<title>pyLandUseMX - Denue</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+<meta property="og:title" content="pyLandUseMX - Denue">
+<meta property="og:description" content="Funciones para utilizar datos del DENUE en estudios de Uso de Suelo.">
+<meta property="og:site-name" content="pyLandUseMX">
+<meta name="twitter:title" content="pyLandUseMX - Denue">
+<meta name="twitter:description" content="Funciones para utilizar datos del DENUE en estudios de Uso de Suelo.">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar docked nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a href="https://www.centrogeo.org.mx/" class="navbar-brand navbar-brand-logo">
+    <img src="../logo_centrogeo.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">pyLandUseMX</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/CentroGeo/pyLandUseMX"><i class="bi bi-github" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/plablo09"><i class="bi bi-twitter" role="img" aria-label="plablo09 Twitter">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Denue</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">pyLandUseMX</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">Tutoriales</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../tutoriales/extraccion_actividades.html" class="sidebar-item-text sidebar-link">Extracción de actividades del DENUE</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../tutoriales/vialidades.html" class="sidebar-item-text sidebar-link">Agregación de vialidades</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">API</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/descargas.html" class="sidebar-item-text sidebar-link">Descargas</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/usodesuelo.html" class="sidebar-item-text sidebar-link">Uso de Suelo</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/denue.html" class="sidebar-item-text sidebar-link active">Denue</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/analisis.html" class="sidebar-item-text sidebar-link">Análisis</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false">Fuentes</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../fuentes/censo.html" class="sidebar-item-text sidebar-link">Datos del Censo</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#denue" id="toc-denue" class="nav-link active" data-scroll-target="#denue">Denue</a></li>
+  <li><a href="#filtrar-por-clave-scian" id="toc-filtrar-por-clave-scian" class="nav-link" data-scroll-target="#filtrar-por-clave-scian">Filtrar por clave SCIAN</a>
+  <ul class="collapse">
+  <li><a href="#denue.filtra_scian" id="toc-denue.filtra_scian" class="nav-link" data-scroll-target="#denue.filtra_scian">Denue.filtra_scian</a></li>
+  </ul></li>
+  <li><a href="#agregar-en-categorías-de-uso-de-suelo" id="toc-agregar-en-categorías-de-uso-de-suelo" class="nav-link" data-scroll-target="#agregar-en-categorías-de-uso-de-suelo">Agregar en categorías de Uso de Suelo</a>
+  <ul class="collapse">
+  <li><a href="#denue.agrega_en_usos" id="toc-denue.agrega_en_usos" class="nav-link" data-scroll-target="#denue.agrega_en_usos">Denue.agrega_en_usos</a></li>
+  </ul></li>
+  <li><a href="#pesos" id="toc-pesos" class="nav-link" data-scroll-target="#pesos">Pesos</a>
+  <ul class="collapse">
+  <li><a href="#denue.pesa_unidades" id="toc-denue.pesa_unidades" class="nav-link" data-scroll-target="#denue.pesa_unidades">Denue.pesa_unidades</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/CentroGeo/pyLandUseMX/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Denue</h1>
+</div>
+
+<div>
+  <div class="description">
+    Funciones para utilizar datos del <a href="https://www.inegi.org.mx/app/mapa/denue/default.aspx">DENUE</a> en estudios de Uso de Suelo.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<p>El DENUE es una fuente de información muy importante para construir bases de datos de Uso de Suelo observado en México. Contiene información básica sobre las unidades económicas clasiificadas de acuerdo al sistema SCIAN. Esta clave nos permite extraer de forma fácil diferentes tipos de unidades.</p>
+<p>Este módulo permite operar sobre la base del DENUE para obtener datos que sirvan para modelar el uso de suelo.</p>
+<p>La clase <a href="https://CentroGeo.github.io/pyLandUseMX/api/denue.html#denue"><code>Denue</code></a> es la interfaz directa para interactuar con la base de datos.</p>
+<hr>
+<p><a href="https://github.com/CentroGeo/pyLandUseMX/blob/master/pyLandUseMX/denue.py#L14" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="denue" class="level3">
+<h3 class="anchored" data-anchor-id="denue">Denue</h3>
+<blockquote class="blockquote">
+<pre><code> Denue (datos:geopandas.geodataframe.GeoDataFrame=None)</code></pre>
+</blockquote>
+<p>Clase para guardar una capa del DENUE para procesarla.</p>
+<p>Lo primero que podemos hacer es crear una instancia de la clase a partir de un archivo con datos del DENUE. El módulo <code>descargas</code> provee funcionalidades para descargar estos archivos.</p>
+<p>Por lo pronto vamos a trabajar con una base de ejemplo que contiene datos para la Zona Metropolitana de la Ciudad de México en el año 2022.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Nos aseguramos de tener los datos</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>pth <span class="op">=</span> descarga_denue(tipo<span class="op">=</span><span class="st">'ejemplo'</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>denue <span class="op">=</span> Denue.desde_archivo(pth)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>denue.datos.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>El archivo ya está descargado</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>ERROR 1: PROJ: proj_create_from_database: Open of /home/plablo/miniconda3/envs/landuse/share/proj failed</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>nom_estab</th>
+      <th>raz_social</th>
+      <th>codigo_act</th>
+      <th>nombre_act</th>
+      <th>per_ocu</th>
+      <th>tipoCenCom</th>
+      <th>cve_ent</th>
+      <th>cve_mun</th>
+      <th>cve_loc</th>
+      <th>ageb</th>
+      <th>manzana</th>
+      <th>index_right</th>
+      <th>OBJECTID</th>
+      <th>Shape_Leng</th>
+      <th>NOM_CIUDAD</th>
+      <th>Shape_Le_1</th>
+      <th>Shape_Area</th>
+      <th>CVE_SUN</th>
+      <th>SUN</th>
+      <th>geometry</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>CONSULTORIO DENTAL</td>
+      <td>None</td>
+      <td>621211</td>
+      <td>Consultorios dentales del sector privado</td>
+      <td>0 a 5 personas</td>
+      <td>None</td>
+      <td>15</td>
+      <td>033</td>
+      <td>0001</td>
+      <td>480A</td>
+      <td>002</td>
+      <td>53</td>
+      <td>54</td>
+      <td>630172.981156</td>
+      <td>Valle de México</td>
+      <td>630.172981</td>
+      <td>781912.110166</td>
+      <td>13</td>
+      <td>13.0</td>
+      <td>POINT (-99.06894 19.54062)</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>TIENDA NATURISTA EL ARTE DE LA NATURALEZA</td>
+      <td>None</td>
+      <td>464113</td>
+      <td>Comercio al por menor de productos naturistas,...</td>
+      <td>0 a 5 personas</td>
+      <td>None</td>
+      <td>09</td>
+      <td>007</td>
+      <td>0001</td>
+      <td>1814</td>
+      <td>027</td>
+      <td>53</td>
+      <td>54</td>
+      <td>630172.981156</td>
+      <td>Valle de México</td>
+      <td>630.172981</td>
+      <td>781912.110166</td>
+      <td>13</td>
+      <td>13.0</td>
+      <td>POINT (-99.06312 19.33782)</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>REPARADORA DE CALZADO LOS RAPIDOS</td>
+      <td>None</td>
+      <td>811430</td>
+      <td>Reparación de calzado y otros artículos de pie...</td>
+      <td>0 a 5 personas</td>
+      <td>None</td>
+      <td>09</td>
+      <td>016</td>
+      <td>0001</td>
+      <td>0162</td>
+      <td>013</td>
+      <td>53</td>
+      <td>54</td>
+      <td>630172.981156</td>
+      <td>Valle de México</td>
+      <td>630.172981</td>
+      <td>781912.110166</td>
+      <td>13</td>
+      <td>13.0</td>
+      <td>POINT (-99.18603 19.45710)</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>SIN NOMBRE</td>
+      <td>None</td>
+      <td>461130</td>
+      <td>Comercio al por menor de frutas y verduras fre...</td>
+      <td>0 a 5 personas</td>
+      <td>None</td>
+      <td>09</td>
+      <td>008</td>
+      <td>0001</td>
+      <td>0423</td>
+      <td>037</td>
+      <td>53</td>
+      <td>54</td>
+      <td>630172.981156</td>
+      <td>Valle de México</td>
+      <td>630.172981</td>
+      <td>781912.110166</td>
+      <td>13</td>
+      <td>13.0</td>
+      <td>POINT (-99.25436 19.30129)</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>ADMINISTRACION MERCADO CONCENTRACION VOCEADORES</td>
+      <td>GOBIERNO DE LA CIUDAD DE MEXICO</td>
+      <td>531311</td>
+      <td>Servicios de administración de bienes raíces</td>
+      <td>0 a 5 personas</td>
+      <td>MERCADO PUBLICO</td>
+      <td>09</td>
+      <td>007</td>
+      <td>0001</td>
+      <td>2371</td>
+      <td>001</td>
+      <td>53</td>
+      <td>54</td>
+      <td>630172.981156</td>
+      <td>Valle de México</td>
+      <td>630.172981</td>
+      <td>781912.110166</td>
+      <td>13</td>
+      <td>13.0</td>
+      <td>POINT (-99.03318 19.38744)</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="filtrar-por-clave-scian" class="level2">
+<h2 class="anchored" data-anchor-id="filtrar-por-clave-scian">Filtrar por clave SCIAN</h2>
+<p>Lo primero que podemos hacer utilizando estos datos es filtrar las filas utilizando la clave SCIAN. Esta clave está compuesta por 6 caractéres que identifican de forma jerárquica sectores, subsectores y actividades económicas. La estructura completa de la clave se puede consultar <a href="https://www.inegi.org.mx/app/scian/#">aquí</a>.</p>
+<p>La clase <a href="https://CentroGeo.github.io/pyLandUseMX/api/denue.html#denue"><code>Denue</code></a> implementa el método <code>filtra_scian</code> que admite una lista de códigos SCIAN,la función regresa un objeto de la misma clase sólo con las filas que correspondan al filtro especificado.</p>
+<p>Cada elemento de la lista de claves puede tener un largo arbitrario (menor a 6 caractéres) y el filtro regresará las filas que <em>empiecen</em> con esos caractéres.</p>
+<hr>
+<p><a href="https://github.com/CentroGeo/pyLandUseMX/blob/master/pyLandUseMX/denue.py#L29" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="denue.filtra_scian" class="level3">
+<h3 class="anchored" data-anchor-id="denue.filtra_scian">Denue.filtra_scian</h3>
+<blockquote class="blockquote">
+<pre><code> Denue.filtra_scian (filtro:list, categoria:str=None)</code></pre>
+</blockquote>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>filtro</td>
+<td>list</td>
+<td></td>
+<td>Lista con las claves a filtrar</td>
+</tr>
+<tr class="even">
+<td>categoria</td>
+<td>str</td>
+<td>None</td>
+<td>Si se especifica agregamos una columna Categoría</td>
+</tr>
+<tr class="odd">
+<td><strong>Returns</strong></td>
+<td><strong>Denue</strong></td>
+<td></td>
+<td><strong>y la populamos con el valor especificado</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Digamos que queremos encontrar los bancos, es decir, los lugares donde un ciudadano común y corriente puede ir a obtener diferentes tipos de servicios financieros. Estos establecimiento corresponden a la clave 522110, es decir: Instituciones de intermediación crediticia y financiera no bursátil:: Banca Múltiple</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>bancos <span class="op">=</span> denue.filtra_scian([<span class="st">'522110'</span>])</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>bancos.datos.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>nom_estab</th>
+      <th>raz_social</th>
+      <th>codigo_act</th>
+      <th>nombre_act</th>
+      <th>per_ocu</th>
+      <th>tipoCenCom</th>
+      <th>cve_ent</th>
+      <th>cve_mun</th>
+      <th>cve_loc</th>
+      <th>ageb</th>
+      <th>manzana</th>
+      <th>index_right</th>
+      <th>OBJECTID</th>
+      <th>Shape_Leng</th>
+      <th>NOM_CIUDAD</th>
+      <th>Shape_Le_1</th>
+      <th>Shape_Area</th>
+      <th>CVE_SUN</th>
+      <th>SUN</th>
+      <th>geometry</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>9</th>
+      <td>HSBC MEXICO</td>
+      <td>BANCO HSBC MEXICO</td>
+      <td>522110</td>
+      <td>Banca múltiple</td>
+      <td>0 a 5 personas</td>
+      <td>None</td>
+      <td>09</td>
+      <td>017</td>
+      <td>0001</td>
+      <td>0140</td>
+      <td>001</td>
+      <td>53</td>
+      <td>54</td>
+      <td>630172.981156</td>
+      <td>Valle de México</td>
+      <td>630.172981</td>
+      <td>781912.110166</td>
+      <td>13</td>
+      <td>13.0</td>
+      <td>POINT (-99.07429 19.44325)</td>
+    </tr>
+    <tr>
+      <th>62</th>
+      <td>BANORTE/IXE</td>
+      <td>BANCO BANORTE IXE</td>
+      <td>522110</td>
+      <td>Banca múltiple</td>
+      <td>0 a 5 personas</td>
+      <td>None</td>
+      <td>15</td>
+      <td>058</td>
+      <td>0003</td>
+      <td>1842</td>
+      <td>001</td>
+      <td>53</td>
+      <td>54</td>
+      <td>630172.981156</td>
+      <td>Valle de México</td>
+      <td>630.172981</td>
+      <td>781912.110166</td>
+      <td>13</td>
+      <td>13.0</td>
+      <td>POINT (-99.01810 19.42340)</td>
+    </tr>
+    <tr>
+      <th>104</th>
+      <td>BBVA BANCOMER</td>
+      <td>BANCO BBVA BANCOMER</td>
+      <td>522110</td>
+      <td>Banca múltiple</td>
+      <td>0 a 5 personas</td>
+      <td>None</td>
+      <td>15</td>
+      <td>121</td>
+      <td>0001</td>
+      <td>2494</td>
+      <td>004</td>
+      <td>53</td>
+      <td>54</td>
+      <td>630172.981156</td>
+      <td>Valle de México</td>
+      <td>630.172981</td>
+      <td>781912.110166</td>
+      <td>13</td>
+      <td>13.0</td>
+      <td>POINT (-99.21454 19.70071)</td>
+    </tr>
+    <tr>
+      <th>167</th>
+      <td>CAJERO AUTOMÁTICO BANCOPPEL</td>
+      <td>BANCO BANCOPPEL</td>
+      <td>522110</td>
+      <td>Banca múltiple</td>
+      <td>0 a 5 personas</td>
+      <td>None</td>
+      <td>15</td>
+      <td>033</td>
+      <td>0001</td>
+      <td>1716</td>
+      <td>004</td>
+      <td>53</td>
+      <td>54</td>
+      <td>630172.981156</td>
+      <td>Valle de México</td>
+      <td>630.172981</td>
+      <td>781912.110166</td>
+      <td>13</td>
+      <td>13.0</td>
+      <td>POINT (-99.02541 19.52982)</td>
+    </tr>
+    <tr>
+      <th>177</th>
+      <td>CAJERO AUTOMÁTICO CITIBANAMEX</td>
+      <td>BANCO CITIBANAMEX</td>
+      <td>522110</td>
+      <td>Banca múltiple</td>
+      <td>0 a 5 personas</td>
+      <td>None</td>
+      <td>09</td>
+      <td>007</td>
+      <td>0001</td>
+      <td>2475</td>
+      <td>005</td>
+      <td>53</td>
+      <td>54</td>
+      <td>630172.981156</td>
+      <td>Valle de México</td>
+      <td>630.172981</td>
+      <td>781912.110166</td>
+      <td>13</td>
+      <td>13.0</td>
+      <td>POINT (-99.09467 19.37080)</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Ese fue el caso más sencillo, pero también podríamos localizar todos los lugares en los que podría trabajar un banquero, no sólo bancos de <em>primer piso</em> sino instituciones financieras en general.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>financieras <span class="op">=</span> denue.filtra_scian([<span class="st">'522110'</span>, <span class="st">'5222'</span>])</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>financieras.datos.tail()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>nom_estab</th>
+      <th>raz_social</th>
+      <th>codigo_act</th>
+      <th>nombre_act</th>
+      <th>per_ocu</th>
+      <th>tipoCenCom</th>
+      <th>cve_ent</th>
+      <th>cve_mun</th>
+      <th>cve_loc</th>
+      <th>ageb</th>
+      <th>manzana</th>
+      <th>index_right</th>
+      <th>OBJECTID</th>
+      <th>Shape_Leng</th>
+      <th>NOM_CIUDAD</th>
+      <th>Shape_Le_1</th>
+      <th>Shape_Area</th>
+      <th>CVE_SUN</th>
+      <th>SUN</th>
+      <th>geometry</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>99870</th>
+      <td>SANTANDER</td>
+      <td>BANCO SANTANDER</td>
+      <td>522110</td>
+      <td>Banca múltiple</td>
+      <td>0 a 5 personas</td>
+      <td>None</td>
+      <td>09</td>
+      <td>006</td>
+      <td>0001</td>
+      <td>0147</td>
+      <td>001</td>
+      <td>53</td>
+      <td>54</td>
+      <td>630172.981156</td>
+      <td>Valle de México</td>
+      <td>630.172981</td>
+      <td>781912.110166</td>
+      <td>13</td>
+      <td>13.0</td>
+      <td>POINT (-99.09996 19.40536)</td>
+    </tr>
+    <tr>
+      <th>99871</th>
+      <td>CAJERO AUTOMÁTICO SANTANDER</td>
+      <td>BANCO SANTANDER</td>
+      <td>522110</td>
+      <td>Banca múltiple</td>
+      <td>0 a 5 personas</td>
+      <td>None</td>
+      <td>09</td>
+      <td>014</td>
+      <td>0001</td>
+      <td>0793</td>
+      <td>022</td>
+      <td>53</td>
+      <td>54</td>
+      <td>630172.981156</td>
+      <td>Valle de México</td>
+      <td>630.172981</td>
+      <td>781912.110166</td>
+      <td>13</td>
+      <td>13.0</td>
+      <td>POINT (-99.18051 19.36955)</td>
+    </tr>
+    <tr>
+      <th>99895</th>
+      <td>BANORTE/IXE</td>
+      <td>BANCO BANORTE IXE</td>
+      <td>522110</td>
+      <td>Banca múltiple</td>
+      <td>0 a 5 personas</td>
+      <td>None</td>
+      <td>09</td>
+      <td>016</td>
+      <td>0001</td>
+      <td>1175</td>
+      <td>015</td>
+      <td>53</td>
+      <td>54</td>
+      <td>630172.981156</td>
+      <td>Valle de México</td>
+      <td>630.172981</td>
+      <td>781912.110166</td>
+      <td>13</td>
+      <td>13.0</td>
+      <td>POINT (-99.18490 19.40710)</td>
+    </tr>
+    <tr>
+      <th>99914</th>
+      <td>CAJERO AUTOMÁTICO SCOTIABANK INVERLAT</td>
+      <td>BANCO SCOTIABANK INVERLAT</td>
+      <td>522110</td>
+      <td>Banca múltiple</td>
+      <td>0 a 5 personas</td>
+      <td>None</td>
+      <td>09</td>
+      <td>003</td>
+      <td>0001</td>
+      <td>0145</td>
+      <td>010</td>
+      <td>53</td>
+      <td>54</td>
+      <td>630172.981156</td>
+      <td>Valle de México</td>
+      <td>630.172981</td>
+      <td>781912.110166</td>
+      <td>13</td>
+      <td>13.0</td>
+      <td>POINT (-99.16168 19.35014)</td>
+    </tr>
+    <tr>
+      <th>99998</th>
+      <td>BANCO SANTANDER</td>
+      <td>BANCO SANTANDER SA</td>
+      <td>522110</td>
+      <td>Banca múltiple</td>
+      <td>0 a 5 personas</td>
+      <td>None</td>
+      <td>09</td>
+      <td>003</td>
+      <td>0001</td>
+      <td>1105</td>
+      <td>016</td>
+      <td>53</td>
+      <td>54</td>
+      <td>630172.981156</td>
+      <td>Valle de México</td>
+      <td>630.172981</td>
+      <td>781912.110166</td>
+      <td>13</td>
+      <td>13.0</td>
+      <td>POINT (-99.18993 19.30272)</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<p>También podemos agregar una columna <code>Categoria</code> a los datos y popularla con el valor que deseemos. Esto puede resultar útil para producir más adelante agregados de diferentes actividades.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>financieras <span class="op">=</span> denue.filtra_scian([<span class="st">'522110'</span>, <span class="st">'5222'</span>], categoria<span class="op">=</span><span class="st">'Financieras'</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>financieras.datos[[<span class="st">'codigo_act'</span>, <span class="st">'Categoria'</span>]].tail()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>codigo_act</th>
+      <th>Categoria</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>99870</th>
+      <td>522110</td>
+      <td>Financieras</td>
+    </tr>
+    <tr>
+      <th>99871</th>
+      <td>522110</td>
+      <td>Financieras</td>
+    </tr>
+    <tr>
+      <th>99895</th>
+      <td>522110</td>
+      <td>Financieras</td>
+    </tr>
+    <tr>
+      <th>99914</th>
+      <td>522110</td>
+      <td>Financieras</td>
+    </tr>
+    <tr>
+      <th>99998</th>
+      <td>522110</td>
+      <td>Financieras</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="agregar-en-categorías-de-uso-de-suelo" class="level2">
+<h2 class="anchored" data-anchor-id="agregar-en-categorías-de-uso-de-suelo">Agregar en categorías de Uso de Suelo</h2>
+<p>En general las claves SCIAN no corresponden directamente con los usos de suelo que queremos usar en una investigación en específico. Por ejemplo, en diferentes tipos de estudios urbanos queremos obtener la cantidad de unidades que corresponden a cuestiones como oficinas, manufacturas y comercios al pormenor. Estas categorías no corresponden a claves SCIAN únicas sino que agrupan diferentes claves en una sola categoría de uso de suelo.</p>
+<p>Para acomodar este flujo de trabajo, la clase <a href="https://CentroGeo.github.io/pyLandUseMX/api/denue.html#denue"><code>Denue</code></a> incorpora el método <code>agrega_en_usos</code> que toma un diccionario con el nombre del uso asociado a una lista de expresiones regulares que buscan las claves SCIAN que se quieren asociar a dicho uso.</p>
+<hr>
+<p><a href="https://github.com/CentroGeo/pyLandUseMX/blob/master/pyLandUseMX/denue.py#L44" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="denue.agrega_en_usos" class="level3">
+<h3 class="anchored" data-anchor-id="denue.agrega_en_usos">Denue.agrega_en_usos</h3>
+<blockquote class="blockquote">
+<pre><code> Denue.agrega_en_usos (categorias:dict, columna:str='Categoria')</code></pre>
+</blockquote>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>categorias</td>
+<td>dict</td>
+<td></td>
+<td>Diccionario con la asociación entre cadenas de búsqueda en codigo_act y categorías de Uso de Suelo</td>
+</tr>
+<tr class="even">
+<td>columna</td>
+<td>str</td>
+<td>Categoria</td>
+<td>Nombre de la columna en la que se va a guardar la categoría</td>
+</tr>
+<tr class="odd">
+<td><strong>Returns</strong></td>
+<td><strong>Denue</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>categorias <span class="op">=</span> {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Manufacturas'</span>: [<span class="st">'^31.*5$'</span>, <span class="st">'^32.*5$'</span>, <span class="st">'^33.*5$'</span>],</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Oficinas'</span>: [<span class="st">'^51'</span>, <span class="st">'^521'</span>, <span class="st">'^523'</span>, <span class="st">'^524'</span>, <span class="st">'^5312'</span>, <span class="st">'^5313'</span>, <span class="st">'^541'</span>, <span class="st">'^55'</span>],</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Comercio'</span>: [<span class="st">'^46[123456]'</span>]</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>usos <span class="op">=</span> denue.agrega_en_usos(categorias)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>usos.datos.loc[<span class="op">~</span>usos.datos.Categoria.isnull()].head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>nom_estab</th>
+      <th>raz_social</th>
+      <th>codigo_act</th>
+      <th>nombre_act</th>
+      <th>per_ocu</th>
+      <th>tipoCenCom</th>
+      <th>cve_ent</th>
+      <th>cve_mun</th>
+      <th>cve_loc</th>
+      <th>ageb</th>
+      <th>...</th>
+      <th>index_right</th>
+      <th>OBJECTID</th>
+      <th>Shape_Leng</th>
+      <th>NOM_CIUDAD</th>
+      <th>Shape_Le_1</th>
+      <th>Shape_Area</th>
+      <th>CVE_SUN</th>
+      <th>SUN</th>
+      <th>geometry</th>
+      <th>Categoria</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>TIENDA NATURISTA EL ARTE DE LA NATURALEZA</td>
+      <td>None</td>
+      <td>464113</td>
+      <td>Comercio al por menor de productos naturistas,...</td>
+      <td>0 a 5 personas</td>
+      <td>None</td>
+      <td>09</td>
+      <td>007</td>
+      <td>0001</td>
+      <td>1814</td>
+      <td>...</td>
+      <td>53</td>
+      <td>54</td>
+      <td>630172.981156</td>
+      <td>Valle de México</td>
+      <td>630.172981</td>
+      <td>781912.110166</td>
+      <td>13</td>
+      <td>13.0</td>
+      <td>POINT (-99.06312 19.33782)</td>
+      <td>Comercio</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>SIN NOMBRE</td>
+      <td>None</td>
+      <td>461130</td>
+      <td>Comercio al por menor de frutas y verduras fre...</td>
+      <td>0 a 5 personas</td>
+      <td>None</td>
+      <td>09</td>
+      <td>008</td>
+      <td>0001</td>
+      <td>0423</td>
+      <td>...</td>
+      <td>53</td>
+      <td>54</td>
+      <td>630172.981156</td>
+      <td>Valle de México</td>
+      <td>630.172981</td>
+      <td>781912.110166</td>
+      <td>13</td>
+      <td>13.0</td>
+      <td>POINT (-99.25436 19.30129)</td>
+      <td>Comercio</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>ADMINISTRACION MERCADO CONCENTRACION VOCEADORES</td>
+      <td>GOBIERNO DE LA CIUDAD DE MEXICO</td>
+      <td>531311</td>
+      <td>Servicios de administración de bienes raíces</td>
+      <td>0 a 5 personas</td>
+      <td>MERCADO PUBLICO</td>
+      <td>09</td>
+      <td>007</td>
+      <td>0001</td>
+      <td>2371</td>
+      <td>...</td>
+      <td>53</td>
+      <td>54</td>
+      <td>630172.981156</td>
+      <td>Valle de México</td>
+      <td>630.172981</td>
+      <td>781912.110166</td>
+      <td>13</td>
+      <td>13.0</td>
+      <td>POINT (-99.03318 19.38744)</td>
+      <td>Oficinas</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>ABARROTES LA TIA</td>
+      <td>None</td>
+      <td>461110</td>
+      <td>Comercio al por menor en tiendas de abarrotes,...</td>
+      <td>0 a 5 personas</td>
+      <td>None</td>
+      <td>15</td>
+      <td>121</td>
+      <td>0001</td>
+      <td>1763</td>
+      <td>...</td>
+      <td>53</td>
+      <td>54</td>
+      <td>630172.981156</td>
+      <td>Valle de México</td>
+      <td>630.172981</td>
+      <td>781912.110166</td>
+      <td>13</td>
+      <td>13.0</td>
+      <td>POINT (-99.19269 19.58976)</td>
+      <td>Comercio</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>BIZUTERIA SIN NOMBRE</td>
+      <td>None</td>
+      <td>463215</td>
+      <td>Comercio al por menor de bisutería y accesorio...</td>
+      <td>0 a 5 personas</td>
+      <td>None</td>
+      <td>15</td>
+      <td>122</td>
+      <td>0001</td>
+      <td>0847</td>
+      <td>...</td>
+      <td>53</td>
+      <td>54</td>
+      <td>630172.981156</td>
+      <td>Valle de México</td>
+      <td>630.172981</td>
+      <td>781912.110166</td>
+      <td>13</td>
+      <td>13.0</td>
+      <td>POINT (-98.94058 19.31219)</td>
+      <td>Comercio</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 21 columns</p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="pesos" class="level2">
+<h2 class="anchored" data-anchor-id="pesos">Pesos</h2>
+<p>El DENUE contiene los puntos de las actividades económicas y algunas variables asociadas. Una de las más importantes para estudios de uso de suelo es el personal ocupado en cada actividad, esta información aparece en el DENUE como rangos:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>usos.datos.per_ocu.unique()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>array(['0 a 5 personas', '6 a 10 personas', '51 a 100 personas',
+       '11 a 30 personas', '101 a 250 personas', '251 y más personas',
+       '31 a 50 personas'], dtype=object)</code></pre>
+</div>
+</div>
+<p>Una forma de asignar pesos que reflejen la cantidad de personas que trabajan en cada unidad económica es a través de un diccionario que relacione la columna <code>per_ocu</code> con el peso que le queremos dar. Para esto tenemos la función <code>pesa_unidades</code></p>
+<hr>
+<p><a href="https://github.com/CentroGeo/pyLandUseMX/blob/master/pyLandUseMX/denue.py#L57" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="denue.pesa_unidades" class="level3">
+<h3 class="anchored" data-anchor-id="denue.pesa_unidades">Denue.pesa_unidades</h3>
+<blockquote class="blockquote">
+<pre><code> Denue.pesa_unidades (pesos:dict, columna:str='pesos')</code></pre>
+</blockquote>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>pesos</td>
+<td>dict</td>
+<td></td>
+<td>Diccionario con la relación per_ocu: peso asignado</td>
+</tr>
+<tr class="even">
+<td>columna</td>
+<td>str</td>
+<td>pesos</td>
+<td>Columna en donde vamos a guardar los pesos</td>
+</tr>
+<tr class="odd">
+<td><strong>Returns</strong></td>
+<td><strong>Denue</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>pesos <span class="op">=</span> {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>        <span class="st">'0 a 5 personas'</span>: <span class="dv">2</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">'6 a 10 personas'</span>: <span class="dv">8</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">'11 a 30 personas'</span>: <span class="dv">20</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">'31 a 50 personas'</span>: <span class="dv">40</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">'51 a 100 personas'</span>: <span class="dv">75</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">'101 a 250 personas'</span>: <span class="dv">175</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">'251 y más personas'</span>: <span class="dv">300</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>usos <span class="op">=</span> usos.pesa_unidades(pesos)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>usos.datos[[<span class="st">'per_ocu'</span>, <span class="st">'pesos'</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>per_ocu</th>
+      <th>pesos</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0 a 5 personas</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0 a 5 personas</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0 a 5 personas</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0 a 5 personas</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0 a 5 personas</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>99995</th>
+      <td>0 a 5 personas</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>99996</th>
+      <td>0 a 5 personas</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>99997</th>
+      <td>0 a 5 personas</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>99998</th>
+      <td>0 a 5 personas</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>99999</th>
+      <td>0 a 5 personas</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+<p>100000 rows × 2 columns</p>
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
